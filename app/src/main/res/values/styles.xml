@@ -1,0 +1,67 @@
+<resources>
+
+     <!--Base application theme.
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        &lt;!&ndash; Customize your theme here. &ndash;&gt;
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>-->
+    <style name="HonestGramTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/saffron</item>
+        <item name="colorAccent">@android:color/black</item>
+    </style>
+
+   <!-- <style name="PHonestGramCategory">
+        <item name="android:layout_margin">@dimen/main_screen_padding</item>
+        <item name="android:background">@drawable/bg_module</item>
+    </style>
+
+    <style name="HonestGramCategoryRectangle" parent="HonestGramCategory">
+        <item name="layout_constraintDimensionRatio">180:116</item>
+    </style>-->
+
+    <style name="EditTextStyle">
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">@dimen/big_text_size</item>
+        <item name="android:paddingTop">13dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textColor">@color/blackTextColor</item>
+        <item name="android:textColorHint">@color/colorTextHint</item>
+        <item name="android:background">@drawable/rounded_button_color_white</item>
+    </style>
+
+    <!-- ToolBar -->
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/blackTextColor</item>
+        <item name="android:textColorSecondary">@color/blackTextColor</item>
+        <item name="actionMenuTextColor">@color/blackTextColor</item>
+
+        <!-- <item name="actionOverflowButtonStyle">@style/OverFlow</item>-->
+        <!--<item name="drawerArrowStyle">@style/StartupVillageDrawerArrowStyle</item>-->
+    </style>
+
+    <style name="Dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="NgseBadgeItem" parent="TextAppearance.AppCompat">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/x_small_text_size</item>
+        <item name="android:layout_marginLeft">@dimen/default_padding</item>
+        <item name="android:layout_marginRight">@dimen/default_padding</item>
+        <item name="android:paddingLeft">@dimen/default_drawable_padding</item>
+        <item name="android:paddingRight">@dimen/default_drawable_padding</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/blackTextColor</item>
+        <!--<item name="android:background">@drawable/ic_orange_circle_</item>-->
+    </style>
+
+</resources>

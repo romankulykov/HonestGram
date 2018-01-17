@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "91998063271",
+    "firebase_url": "https://honestgram-f9616.firebaseio.com",
+    "project_id": "honestgram-f9616",
+    "storage_bucket": "honestgram-f9616.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91998063271:android:29c2a750e46612a1",
+        "android_client_info": {
+          "package_name": "moran_company.honestgram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91998063271-3tkve37v98k83quecjtr06vtgaaterp4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "moran_company.honestgram",
+            "certificate_hash": "c478abe9497bb678ffa2c927b6129038c3c4370d"
+          }
+        },
+        {
+          "client_id": "91998063271-lg74c03elpujvboa812rksj5tnh6ke4h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXDHESxrIUfT1bR7sLR2V_U2zB8w_BaEU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91998063271-lg74c03elpujvboa812rksj5tnh6ke4h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

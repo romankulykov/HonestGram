@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">HonestGram</string>
+    <string name="input_login">Введите логин или email</string>
+    <string name="input_password">Введите пароль</string>
+    <string name="lbl_amount">Сумма</string>
+    <string name="lbl_ccy">Валюта</string>
+    <string name="lbl_email">Почта</string>
+    <string name="lbl_description">Описание</string>
+    <string name="btn_pay">Оплатить</string>
+
+    <string name="btn_simple_example">Simple Example</string>
+    <string name="btn_flexible_example">Flexible Example</string>
+
+    <string name="e_invalid_amount">Invalid amount</string>
+    <string name="e_invalid_email">Invalid email</string>
+    <string name="e_invalid_description">Enter description</string>
+
+    <string name="wait_loading">Ожидайте&#8230;</string>
+    <string name="network_disable_error">Отсутствует связь с сервером</string>
+    <string name="go_exit">Для выхода нажмите еще раз</string>
+    <string name="menu_title">Меню</string>
+    <string name="exit">Выйти</string>
+
+    <!-- Main Menu-->
+    <string name="product">Товары</string>
+    <string name="about">О компании</string>
+    <string name="cities_and_hoods">Города, районы</string>
+    <string name="contacts">Контакты</string>
+    <string name="share">Поделиться</string>
+    <string name="enter_in_application">Войти в приложение</string>
+    <string name="enter">Войти</string>
+    <string name="registration">Регистрация</string>
+    <string name="forgotPassword">Забыл пароль</string>
+    <string name="empty_fields">Необходимо заполнить все поля</string>
+    <string name="found">Найден</string>
+    <string name="not_found">Не найден</string>
+    <string name="menu_profile">Профиль</string>
+    <string name="menu_authorization">Авторизоваться</string>
+    <string name="menu_main_page">Главная страница</string>
+    <string name="menu_map">Карта</string>
+    <string name="already_exist">Пользователь с таким логином уже существует</string>
+    <string name="to_registration">Зарегистрироваться</string>
+    <string name="input_password_again">Введите пароль повторно</string>
+    <string name="input_nickname">Введите псевдоним</string>
+    <string name="add_dialog">Добавить диалог</string>
+    <string name="enter_message">Введите сообщение</string>
+    <string name="attention">Внимание</string>
+    <string name="choose_companion">Выберите собеседника</string>
+    <string name="ok">Ок</string>
+    <string name="cancel">отмена</string>
+    <string name="opened_conversation">С вами открыта беседа</string>
+    <string name="you_write">Вы :</string>
+    <string name="companion_write">Собеседник :</string>
+
+
+</resources>

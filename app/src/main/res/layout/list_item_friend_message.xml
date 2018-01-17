@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/half_default_padding"
+
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/allports"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/messageBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/half_default_padding"
+
+            android:layout_marginRight="@dimen/half_default_padding"
+            android:gravity="center_vertical"
+            android:minWidth="100dp"
+
+            android:padding="@dimen/half_default_padding"
+            android:paddingLeft="@dimen/half_default_padding"
+            android:paddingRight="@dimen/half_default_padding"
+            android:textColor="@color/blackTextColor"
+            android:textSize="@dimen/big_text_size" />
+
+        <TextView
+            android:id="@+id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginLeft="@dimen/half_default_padding"
+            android:layout_marginRight="@dimen/half_default_padding"
+            android:textColor="#96a4ba"
+            android:textSize="@dimen/x_small_text_size" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
