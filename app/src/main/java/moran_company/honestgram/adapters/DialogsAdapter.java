@@ -33,14 +33,17 @@ public class DialogsAdapter extends BaseAdapter<List<Dialogs>, DialogsAdapter.Vi
     public void onBindViewHolder(DialogsAdapter.ViewHolder holder, int position) {
         Dialogs lastMessage = items.get(position).get(items.get(position).size() - 1);
         holder.lastMessage.setText(lastMessage.getMessage());
-        Users users = PreferencesData.INSTANCE.getUser();
-        Users otherUser = Utility.getUserById(lastMessage.getUser_id(), PreferencesData.INSTANCE.getUsers());
+        Users myUser = PreferencesData.INSTANCE.getUser();
+        Users otherUser = lastMessage.getUser_id()==myUser.getId()?
+                myUser:
+                Utility.getUserById(lastMessage.getUser_id(), PreferencesData.INSTANCE.getUsers());
         if (otherUser != null)
             GlideApp.with(holder.context)
                     .load(otherUser.getPhotoURL())
-                    .placeholder(R.drawable.round_frame_selector)
+                    .placeholder(R.drawable.unknown)
                     .into(holder.avatarProfile);
-        holder.whoWrite.setText(lastMessage.getUser_id() == users.getId() ? holder.context.getString(R.string.you_write) : otherUser.getNickname());
+        holder.whoWrite.setText(lastMessage.getUser_id() == myUser.getId() ? holder.context.getString(R.string.you_write) :
+                otherUser!=null?otherUser.getNickname()+" : ":holder.context.getString(R.string.companion_write));
     }
 
     public class ViewHolder extends BaseViewHolder {

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="moran_company.honestgram">
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -8,6 +11,9 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
     <application
         android:name=".HonestApplication"
@@ -34,6 +40,31 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait"
             />
+        <activity android:name=".activities.ProductsActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
+        <activity android:name=".activities.CartActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
+        <activity android:name=".activities.map.MapActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
+        <activity android:name=".activities.profile.ProfileActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
+        <activity android:name=".activities.dialogs.DialogsActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
         <activity android:name=".activities.registration.RegistrationActivity"
             android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
             android:launchMode="singleTask"
@@ -42,6 +73,12 @@
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDdQ661i8ZZZXq6CubTpVNvqFOPTa0NBY0"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="afd016df1091c2602870c863a7a6b7d3ff31d5b6"
@@ -58,6 +95,25 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
+        <service
+            android:name=".services.LocationService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <service android:name=".services.MyService" android:process="moran_company.honestgram"
+            >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".services.BootBroadcast">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <!--<receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

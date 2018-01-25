@@ -109,7 +109,7 @@ public class ChatPresenter extends BasePresenterImpl<ChatMvp.View> implements Ch
                                         });
 
                             }else {
-                                mView.showDialogs(dialogsList);
+                                if (isExistsView())mView.showDialogs(dialogsList);
                             }
                         }
 
@@ -140,7 +140,7 @@ public class ChatPresenter extends BasePresenterImpl<ChatMvp.View> implements Ch
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                loadMessages(dialogId);
+                if (isExistsView()) loadMessages(dialogId);
             }
 
             @Override

@@ -20,14 +20,16 @@
         android:layout_marginStart="23dp"
         android:paddingTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/menuTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="23dp"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="15dp"
         android:gravity="center_vertical"
         android:textColor="@color/blackTextColor"
         android:textSize="16sp"

@@ -7,7 +7,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,9 +21,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,18 +39,33 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTouch;
+import butterknife.Optional;
 import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.MainActivity;
+import moran_company.honestgram.activities.ProductsActivity;
+import moran_company.honestgram.activities.dialogs.DialogsActivity;
+import moran_company.honestgram.activities.map.MapActivity;
+import moran_company.honestgram.activities.profile.ProfileActivity;
 import moran_company.honestgram.base_mvp.BaseMvp;
 import moran_company.honestgram.data.Dialogs;
 import moran_company.honestgram.data.ItemMenu;
+import moran_company.honestgram.data.PreferencesData;
+import moran_company.honestgram.data.Users;
+import moran_company.honestgram.eventbus.UpdateNavigation;
 import moran_company.honestgram.fragments.base.BaseFragment;
 import moran_company.honestgram.fragments.chat.ChatFragment;
 import moran_company.honestgram.fragments.chat_available.ChatAvailableFragment;
 import moran_company.honestgram.fragments.dialogs.DialogsFragment;
 import moran_company.honestgram.fragments.main.MainFragment;
+import moran_company.honestgram.fragments.map.MapFragment;
 import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerFragment;
+import moran_company.honestgram.fragments.navigation_drawer_seller.NavigationDrawerFragmentSeller;
+import moran_company.honestgram.fragments.products.ProductsFragment;
+import moran_company.honestgram.fragments.profile.ProfileFragment;
+import moran_company.honestgram.services.MyService;
 import moran_company.honestgram.utility.DebugUtility;
 import moran_company.honestgram.utility.DialogUtility;
 import moran_company.honestgram.utility.Utility;
@@ -62,6 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     }
 
     public NavigationDrawerFragment mNavigationDrawerFragment;
+    public NavigationDrawerFragmentSeller mNavigationDrawerFragmentSeller;
     @Nullable
     @BindView(R.id.drawerLayout)
     DrawerLayout mDrawerLayout;
@@ -74,9 +97,34 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     @Nullable
     @BindView(R.id.titleBar)
     TextView titleBar;
+
+    @Nullable
+    @BindView(R.id.secondToolbar)
+    Toolbar secondToolbar;
+    @Nullable
+    @BindView(R.id.secondBarTitle)
+    TextView secondBarTitle;
   /*  @Nullable
     @BindView(R.id.toolBarTitle)
     TextView mToolBarTitle;*/
+
+    @Nullable
+    @BindView(R.id.cart)
+    RelativeLayout cart;
+    @Nullable
+    @BindView(R.id.basketCountTextView)
+    TextView mBasketCounter;
+    @Nullable
+    @BindView(R.id.secondMenuBackImageView)
+    ImageView mSecondMenuBackImageView;
+
+    private Intent intent;
+
+    private boolean open = false;
+
+    private ItemMenu.MENU_TYPE mTypeMenu;
+
+    private boolean rightSide;
 
 
     private FragmentManager mCurrentFragmentManager;
@@ -92,6 +140,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
        /* if (activityClass == context.getClass()) {
             return false;
         }*/
+
         Intent intent = new Intent(context, activityClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         if (clearBackStack)
@@ -104,17 +153,20 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     public static void showActivity(Context context, ItemMenu itemMenu) {
         DebugUtility.logTest(TAG, "showActivity " + itemMenu.getMenuType());
         switch (itemMenu.getMenuType()) {
-            /*case LOGIN:
+           /* case LOGIN:
                 BaseActivity.newInstance(context, LoginActivity.class, true);
+                break;*/
+            case PRODUCTS:
+                BaseActivity.newInstance(context, ProductsActivity.class, false);
                 break;
             case PROFILE:
                 BaseActivity.newInstance(context, ProfileActivity.class, false);
                 break;
-            */case MAIN:
+            case MAIN:
                 BaseActivity.newInstance(context, MainActivity.class, false);
                 break;
             case MAP:
-
+                BaseActivity.newInstance(context, MapActivity.class, false);
                 //BaseActivity.newInstance(context, MapActivity.class, false);
                 break;
             /*case COMPANIES:
@@ -134,10 +186,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
                 break;
             case FRIENDS:
                 BaseActivity.newInstance(context, FriendsActivity.class, false);
-                break;
-            case CONTACTS:
-                BaseActivity.newInstance(context, ContactsActivity.class, false);
                 break;*/
+            case CHATS:
+                BaseActivity.newInstance(context, DialogsActivity.class, false);
+                break;
             case NONE:
                 break;
         }
@@ -165,6 +217,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         mDialog = DialogUtility.getWaitDialog(this, this.getString(R.string.wait_loading), false);
         getCurrentFragmentManager();
         initNavigationDrawer();
+        initNavigationDrawerSeller();
         if (!Utility.checkLocationPermissions(this)) {
             ActivityCompat.requestPermissions(this,
                     new String[]{
@@ -205,6 +258,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     @Override
     protected void onResume() {
         super.onResume();
+        setBasketCounter(PreferencesData.INSTANCE.getUser());
         //EventBus.getDefault().register(this);
     }
 
@@ -226,7 +280,28 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
 
+    @Optional
+    @OnClick(R.id.cart)
+    public void clickCart() {
+
+    }
+
+    @Optional
+    @OnClick(R.id.secondMenuImageView)
+    public void menuSeller() {
+        open = !open;
+        if (!mNavigationDrawerFragmentSeller.isDrawerOpen())
+            ((DrawerLayout) findViewById(R.id.drawerLayout)).openDrawer(Gravity.RIGHT);
+        else
+            ((DrawerLayout) findViewById(R.id.drawerLayout)).closeDrawer(Gravity.RIGHT);
+    }
+
+    @Optional
+    @OnClick(R.id.secondMenuBackImageView)
+    public void hideSecond() {
+        hideToolbarSecond();
     }
 
     @Override
@@ -240,6 +315,35 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         }
         return super.onOptionsItemSelected(item);
     }
+/*
+
+    @Optional
+    @OnTouch(R.id.activityContainer)
+    boolean touch(View view, MotionEvent motionEvent) {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        int width = 0;
+        int height = 0;
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                display.getSize(size);
+                width = size.x;
+                height = size.y;
+                rightSide = motionEvent.getX()>width/2;
+                return true;
+            case MotionEvent.ACTION_UP:
+
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                display.getSize(size);
+                width = size.x;
+                height = size.y;
+                rightSide = motionEvent.getX()>width/2;
+                return true;
+        }
+        return false;
+    }
+*/
 
     protected void initNavigationDrawer() {
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -249,12 +353,48 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         mNavigationDrawerFragment.setUp(
                 R.id.navigationDrawer,
                 mDrawerLayout, mToolBar);
-        mNavigationDrawerFragment.setOnDrawerSlideListener(moveFactor ->
-                lastTranslate = Utility.translateContainer(mActivityContainer, moveFactor, lastTranslate));
+        this.mNavigationDrawerFragment.setOnDrawerSlideListener(moveFactor -> {
+            if (!open && !rightSide)
+                lastTranslate = Utility.translateContainer(mActivityContainer, moveFactor, lastTranslate);
+        });
         HonestApplication application = getHonestApplication();
         if (application.getMenuAdapter() != null)
             mNavigationDrawerFragment.setAdapter(application.getMenuAdapter());
 
+    }
+
+
+   /* @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateNavigation(UpdateNavigation updateNavigation) {
+        DebugUtility.logTest(TAG, "onUpdateProfile");
+        if (updateNavigation != null) {
+            //this.open = updateNavigation.isFoo();
+        }
+          *//*  if ((updateProfileEvent.checkLogin() == null && !(this instanceof MainActivity)))
+                finish();*//*
+    }*/
+
+    protected void initNavigationDrawerSeller() {
+        mNavigationDrawerFragmentSeller = (NavigationDrawerFragmentSeller)
+                getSupportFragmentManager().findFragmentById(R.id.navigationDrawerSeller);
+        if (mNavigationDrawerFragmentSeller == null)
+            return;
+        /*mNavigationDrawerFragmentSeller.setOnDrawerSlideListener(moveFactor -> {
+            boolean open = mNavigationDrawerFragment.isDrawerOpen();
+
+        });*/
+        mNavigationDrawerFragmentSeller.setUp(
+                R.id.navigationDrawerSeller,
+                mDrawerLayout, secondToolbar);
+        //setTypeMenu(getTypeMenu());
+        /*if (application.getMenuAdapter() != null)
+            mNavigationDrawerFragmentSeller.setAdapter(application.getRightMenuAdapter());*/
+    }
+
+    public void setTypeMenu(ItemMenu.MENU_TYPE menuType) {
+        HonestApplication application = getHonestApplication();
+        if (application.getMenuAdapter() != null)
+            mNavigationDrawerFragmentSeller.setAdapter(application.getRightMenuAdapter(menuType));
     }
 
     public FragmentManager getCurrentFragmentManager() {
@@ -376,27 +516,45 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
-    public void showMainFragment(){
+    public void showMainFragment() {
         String tag = MainFragment.class.getName();
         MainFragment fragment = new MainFragment();
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 
-    public void showDialogsFragment(){
-        String tag = DialogsFragment.class.getName();
-        DialogsFragment fragment = new DialogsFragment();
-        showFragment(R.id.fragmentContainer, fragment, tag, true);
+    public void showProductsFragment() {
+        String tag = ProductsFragment.class.getName();
+        ProductsFragment fragment = new ProductsFragment();
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 
-    public void showChatFragment(List<Dialogs> dialogs){
+    public void showMapFragment() {
+        String tag = MapFragment.class.getName();
+        MapFragment fragment = new MapFragment();
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }
+
+    public void showProfileFragment() {
+        String tag = ProfileFragment.class.getName();
+        ProfileFragment fragment = new ProfileFragment();
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }
+
+    public void showDialogsFragment() {
+        String tag = DialogsFragment.class.getName();
+        DialogsFragment fragment = new DialogsFragment();
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }
+
+    public void showChatFragment(List<Dialogs> dialogs) {
         String tag = ChatFragment.class.getName();
         ChatFragment fragment = ChatFragment.newInstance(dialogs);
         showFragment(R.id.fragmentContainer, fragment, tag, true);
     }
 
-    public void showAvailableContacts(List<List<Dialogs>> dialogs){
+    public void showAvailableContacts(List<List<Dialogs>> dialogs) {
         ChatAvailableFragment dialog = ChatAvailableFragment.newInstance(dialogs);
-        dialog.show(getCurrentFragmentManager(),dialog.getTag());
+        dialog.show(getCurrentFragmentManager(), dialog.getTag());
     }
 
 
@@ -457,6 +615,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         if (mToolBar != null) mToolBar.setVisibility(View.GONE);
     }
 
+
+    public void showToolbarSecond() {
+        if (secondToolbar != null) secondToolbar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideToolbarSecond() {
+        if (secondToolbar != null) secondToolbar.setVisibility(View.GONE);
+    }
+
     public HonestApplication getHonestApplication() {
         return (HonestApplication) getApplication();
     }
@@ -466,5 +633,49 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         return mNavigationDrawerFragment;
     }
 
+    public NavigationDrawerFragmentSeller getNavigationDrawerFragmentSeller() {
+        return mNavigationDrawerFragmentSeller;
+    }
 
+    public void setBasketCounter(Users user) {
+        if (user != null) {
+            int count = user.getCart() == null ? 0 : user.getCart().size();
+            if (mBasketCounter != null)
+                if (count > 0) {
+                    mBasketCounter.setVisibility(View.VISIBLE);
+                    mBasketCounter.setText(Integer.toString(count));
+                } else mBasketCounter.setVisibility(View.GONE);
+        }
+    }
+
+
+    public void stopLocationService() {
+        stopService(new Intent(this, MyService.class));
+    }
+
+    public void startLocationService() {
+        Users users = PreferencesData.INSTANCE.getUser();
+        intent = new Intent(this, MyService.class);
+        intent.putExtra("users", (Parcelable) users);
+        startService(new Intent(this, MyService.class));
+    }
+
+    public void restartLocationService() {
+        stopLocationService();
+        startLocationService();
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public ItemMenu.MENU_TYPE getTypeMenu() {
+        ItemMenu.MENU_TYPE menuType = ItemMenu.MENU_TYPE.NONE;
+        String name = this.getClass().getName();
+        if (ProductsActivity.TAG == name)
+            menuType = ItemMenu.MENU_TYPE.PRODUCTS;
+        if (MapActivity.TAG == name)
+            menuType = ItemMenu.MENU_TYPE.MAP;
+        return menuType;
+    }
 }

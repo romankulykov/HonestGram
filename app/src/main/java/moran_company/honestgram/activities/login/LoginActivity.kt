@@ -2,7 +2,6 @@ package moran_company.honestgram.activities.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_login.*
@@ -21,13 +20,20 @@ import moran_company.honestgram.utility.ImageFilePath
  */
 open class LoginActivity : BaseMvpActivity<LoginMvp.Presenter>(), LoginMvp.View {
 
+    private var count: Int = 0
+
     override fun createPresenter(): LoginMvp.Presenter = LoginPresenter(this)
+
+    //private val sendingChangedLocation = SendingChangedLocation()
+
 
     override fun getLayoutResId(): Int = R.layout.activity_login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (PreferencesData.getUser()!=null) {
+        startLocationService()
+
+        if (PreferencesData.getUser() != null) {
             var users = PreferencesData.getUser()
             BaseActivity.newInstance(this, MainActivity::class.java, true)
         }
@@ -46,17 +52,26 @@ open class LoginActivity : BaseMvpActivity<LoginMvp.Presenter>(), LoginMvp.View 
 
         })
 
-        forgotPasswordTextView.setOnClickListener({view ->
+        forgotPasswordTextView.setOnClickListener({ view ->
             /*CropImage.activity()
                     //.setRequestedSize(Constants.PROFILE_WIDTH, Constants.PROFILE_HEIGHT)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(132, 170)
                     .start(this)*/
             mPresenter.forgotPassword()
+           /* count++
+            if (count % 2 != 0)
+                startService(
+                        Intent(this@LoginActivity, LocationService::class.java))
+            else stopService(Intent(this@LoginActivity, LocationService::class.java))*/
+            //sendingChangedLocation.sendLocation(CustomLocation(12f,12f))
+
         })
+
+
     }
 
-    override fun  onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == RESULT_OK) {
@@ -78,7 +93,8 @@ open class LoginActivity : BaseMvpActivity<LoginMvp.Presenter>(), LoginMvp.View 
         if (user != null) {
             showToast(R.string.found)
             PreferencesData.saveUser(user)
-            BaseActivity.newInstance(this, MainActivity::class.java,true)
+            BaseActivity.newInstance(this, MainActivity::class.java, true)
+            restartLocationService()
         } else
             showToast(R.string.not_found)
     }

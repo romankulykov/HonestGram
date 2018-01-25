@@ -39,6 +39,7 @@ public final class HonestApplication extends Application {
     }
 
     private MenuAdapter mMenuAdapter;
+    private MenuAdapter mRightMenuAdapter;
 
 
     public static boolean hasNetwork() {
@@ -63,7 +64,7 @@ public final class HonestApplication extends Application {
         menu.add(new ItemMenu(R.string.menu_main_page, android.R.color.white, ItemMenu.MENU_TYPE.MAIN));
         menu.add(new ItemMenu(R.string.menu_map, android.R.color.white, ItemMenu.MENU_TYPE.MAP));
         menu.add(new ItemMenu(R.string.product, android.R.color.white, ItemMenu.MENU_TYPE.PRODUCTS));
-        menu.add(new ItemMenu(R.string.cities_and_hoods, android.R.color.white, ItemMenu.MENU_TYPE.CITIES_AND_HOODS));
+        menu.add(new ItemMenu(R.string.chats, android.R.color.white, ItemMenu.MENU_TYPE.CHATS));
         menu.add(new ItemMenu(R.string.share, android.R.color.white, ItemMenu.MENU_TYPE.SHARE));
         menu.add(new ItemMenu(R.string.about, android.R.color.white, ItemMenu.MENU_TYPE.ABOUT));
 
@@ -75,6 +76,26 @@ public final class HonestApplication extends Application {
         if (mMenuAdapter == null)
             initDrawerAdapter();
         return mMenuAdapter;
+    }
+
+    public MenuAdapter getRightMenuAdapter(ItemMenu.MENU_TYPE menuType) {
+        if (mRightMenuAdapter == null)
+            initRightDrawerAdapter(menuType);
+        return mRightMenuAdapter;
+    }
+
+    private void initRightDrawerAdapter(ItemMenu.MENU_TYPE menuType) {
+        List<ItemMenu> menu = new ArrayList<>();
+        switch (menuType){
+            case PRODUCTS:
+                menu.add(new ItemMenu(R.string.add_product,android.R.color.white, ItemMenu.MENU_TYPE.ADD_PRODUCT));
+                break;
+            case MAP:
+                menu.add(new ItemMenu(R.string.tracking,android.R.color.white, ItemMenu.MENU_TYPE.ADD_PRODUCT));
+                break;
+        }
+        mRightMenuAdapter = new MenuAdapter(R.layout.list_item_menu);
+        mRightMenuAdapter.setItems(menu);
     }
 
 
@@ -101,7 +122,7 @@ public final class HonestApplication extends Application {
       /*  User mUser = updateProfileEvent.getUser();
         if (mUser == null)
             return;*/
-        initDrawerAdapter();
+        //initDrawerAdapter();
 
 
     }

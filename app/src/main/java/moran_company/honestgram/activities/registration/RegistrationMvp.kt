@@ -1,5 +1,6 @@
 package moran_company.honestgram.activities.registration
 
+import android.location.Location
 import moran_company.honestgram.base_mvp.BaseMvp
 import moran_company.honestgram.data.Users
 
@@ -12,7 +13,7 @@ interface RegistrationMvp {
     }
 
     interface Presenter : BaseMvp.Presenter {
-        fun registration(nickname: String, login: String, password: String)
+        fun registration(nickname: String, login: String, password: String,location : Boolean)
     }
 
 }

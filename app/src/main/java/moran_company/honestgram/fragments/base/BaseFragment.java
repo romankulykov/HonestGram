@@ -16,7 +16,9 @@ import butterknife.ButterKnife;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.base.BaseActivity;
 import moran_company.honestgram.base_mvp.BaseMvp;
+import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerFragment;
+import moran_company.honestgram.fragments.navigation_drawer_seller.NavigationDrawerFragmentSeller;
 import moran_company.honestgram.utility.DialogUtility;
 
 
@@ -61,9 +63,9 @@ public abstract class BaseFragment extends Fragment implements BaseMvp.View {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if (mBaseActivity == null || mBaseActivity.getNavigationDrawerFragment() == null)
+        if (mBaseActivity == null || mBaseActivity.getNavigationDrawerFragment() == null|| mBaseActivity.getNavigationDrawerFragmentSeller() == null)
             return;
-        if (this instanceof NavigationDrawerFragment)
+        if (this instanceof NavigationDrawerFragment || this instanceof NavigationDrawerFragmentSeller)
             return;
         if (mBaseActivity.haveFragmentInBackStack())
             mBaseActivity.getNavigationDrawerFragment().setBackControl();

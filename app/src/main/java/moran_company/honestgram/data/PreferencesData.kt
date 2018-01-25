@@ -1,15 +1,8 @@
 package moran_company.honestgram.data
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.content.SharedPreferences.Editor
 import android.preference.PreferenceManager
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectReader
-import com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer
 import com.google.gson.Gson
-
 import moran_company.honestgram.HonestApplication
 import moran_company.honestgram.utility.ObjectSerializer
 
@@ -19,10 +12,21 @@ object PreferencesData {
     private val KEY_PROFILE = "profilePrefs"
     private val KEY_DIALOGS = "profileDialogs"
     private val KEY_USERS = "profileUsers"
+    private val KEY_UNREGISTER = "profileUnregister"
+    private val KEY_UNREGISTER_USER = "profileUnregisterUser"
+    private val KEY_CITIES = "cities"
+
 
 
     private val applicationContext: Context
         get() = HonestApplication.getInstance()
+
+    fun saveUnregisterKey(user: String) {
+        var json = Gson().toJson(user)
+        save(KEY_UNREGISTER, json)
+    }
+
+    fun getUnregisterKey(): String? = getString(KEY_UNREGISTER, "")
 
     fun saveUser(user: Users) {
         var json = Gson().toJson(user)
@@ -35,16 +39,40 @@ object PreferencesData {
         save(KEY_PROFILE, null)
     }
 
+    fun saveUserUnregister(user: Users) {
+        var json = Gson().toJson(user)
+        save(KEY_UNREGISTER_USER, json)
+    }
+
+    fun getUserUnregister(): Users? = Gson().fromJson(getString(KEY_UNREGISTER_USER, ""), Users::class.java)
+
+    fun resetProfileUnregister() {
+        save(KEY_UNREGISTER_USER, null)
+    }
+
     fun saveUserDialogs(listDialogs: ArrayList<List<Dialogs>>) {
         save(KEY_DIALOGS, ObjectSerializer.serialize(listDialogs))
     }
 
     fun getUserDialogs(): ArrayList<List<Dialogs>>? =
             ObjectSerializer
-                    .deserialize(getString(KEY_DIALOGS,ObjectSerializer.serialize(ArrayList<List<Dialogs>>()))) as ArrayList<List<Dialogs>>?
+                    .deserialize(getString(KEY_DIALOGS, ObjectSerializer.serialize(ArrayList<List<Dialogs>>()))) as ArrayList<List<Dialogs>>?
 
     fun resetUserDialogs() {
         save(KEY_DIALOGS, null)
+    }
+
+
+    fun saveCities(listDialogs: ArrayList<City>) {
+        save(KEY_CITIES, ObjectSerializer.serialize(listDialogs))
+    }
+
+    fun loadCities(): ArrayList<City>? =
+            ObjectSerializer
+                    .deserialize(getString(KEY_CITIES, ObjectSerializer.serialize(ArrayList<City>()))) as ArrayList<City>?
+
+    fun resetCities() {
+        save(KEY_CITIES, null)
     }
 
     fun saveUsers(listDialogs: ArrayList<Users>) {
@@ -53,7 +81,7 @@ object PreferencesData {
 
     fun getUsers(): ArrayList<Users>? =
             ObjectSerializer
-                    .deserialize(getString(KEY_USERS,ObjectSerializer.serialize(ArrayList<Users>()))) as ArrayList<Users>?
+                    .deserialize(getString(KEY_USERS, ObjectSerializer.serialize(ArrayList<Users>()))) as ArrayList<Users>?
 
     fun resetUsers() {
         save(KEY_USERS, null)
@@ -108,5 +136,6 @@ object PreferencesData {
         editor.putBoolean(key, value)
         editor.apply()
     }
+
 
 }

@@ -3,6 +3,8 @@ package moran_company.honestgram.utility;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -33,13 +35,13 @@ public class DialogUtility {
                 .setTitle(title)
                 .setMessage(text)
                 .setPositiveButton(okResId <= 0 ? R.string.ok : okResId, (dialog, which) -> {
-                    Log.d(TAG,"AlertDialogTwoButtons");
+                    Log.d(TAG, "AlertDialogTwoButtons");
                     dialog.dismiss();
                     if (onDialogButtonsClickListener != null)
                         onDialogButtonsClickListener.onPositiveClick();
                 })
                 .setNegativeButton(cancelResId <= 0 ? R.string.cancel : cancelResId, (dialog, which) -> {
-                    Log.d(TAG,"AlertDialogTwoButtons Negative");
+                    Log.d(TAG, "AlertDialogTwoButtons Negative");
                     dialog.dismiss();
                     if (onDialogButtonsClickListener != null)
                         onDialogButtonsClickListener.onNegativeClick();
@@ -57,7 +59,7 @@ public class DialogUtility {
         dialog.setCancelable(cancelable);
         //CircularProgressView progressBarCircular = (CircularProgressView) dialog.findViewById(R.id.progressBarCircular);
 
-        TextView textTextView =  dialog.findViewById(R.id.textTextView);
+        TextView textTextView = dialog.findViewById(R.id.textTextView);
         if (text != null && text.length() != 0) {
             textTextView.setVisibility(View.VISIBLE);
             textTextView.setText(text);
@@ -79,11 +81,31 @@ public class DialogUtility {
 
         return dialog;
     }
+
+
+    public static Dialog buildAlertMessageNoGps(final Context context, final OnDialogButtonsClickListener onDialogButtonsClickListener) {
+        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setMessage(R.string.gps_permission)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
+                    ActivityCompat.startActivity(context, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null);
+                })
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
+                    if (onDialogButtonsClickListener != null)
+                        onDialogButtonsClickListener.onNegativeClick();
+                });
+        final android.support.v7.app.AlertDialog alert = builder.create();
+        return alert;
+        //alert.show();
+    }
+
     public static void closeDialog(Dialog dialog) {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }
+
     public interface OnDialogButtonsClickListener {
         void onPositiveClick();
 

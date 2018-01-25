@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -33,6 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import moran_company.honestgram.GlideApp;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.base.BaseActivity;
 import moran_company.honestgram.activities.login.LoginActivity;
@@ -97,6 +97,8 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void onResume() {
         super.onResume();
         if (presenter != null) presenter.onResume(mBaseActivity, this);
+        if (PreferencesData.INSTANCE.getUser() != null)
+            setProfile(PreferencesData.INSTANCE.getUser());
     }
 
     @Override
@@ -141,6 +143,8 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
                 0);
 
         mNavigationDrawerList.addItemDecoration(dividerItemDecoration);
+
+
         //updateView();
     }
 
@@ -148,13 +152,15 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         mTopView = topView;
     }*/
 
+
     @Override
     public void setProfile(Users users) {
         mAvatarProfile.setVisibility(View.VISIBLE);
         nickname.setVisibility(View.VISIBLE);
         if (users != null) {
-            Glide.with(getContext())
+            GlideApp.with(getContext())
                     .load(users.getPhotoURL())
+                    .placeholder(R.drawable.user_add)
                     .into(mAvatarProfile);
             nickname.setText(users.getNickname());
             PreferencesData.INSTANCE.saveUser(users);
@@ -174,7 +180,9 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void setUp(int fragmentId, DrawerLayout drawerLayout, Toolbar toolBar) {
         this.fragmentContainerView = getActivity().findViewById(fragmentId);
         this.drawerLayout = drawerLayout;
-        this.drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        this.drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
+
+        //this.drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         if (toolBar != null) {
             // mBaseActivity.setSupportActionBar(toolBar);
             ActionBar actionBar = getActionBar();
@@ -227,6 +235,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     @OnClick(R.id.exitTextView)
     void exitClick() {
         PreferencesData.INSTANCE.resetProfile();
+        mBaseActivity.stopLocationService();
         BaseActivity.newInstance(getContext(), LoginActivity.class, true);
     }
 

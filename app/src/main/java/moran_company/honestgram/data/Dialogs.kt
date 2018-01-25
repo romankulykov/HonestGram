@@ -9,7 +9,7 @@ import java.io.Serializable
  * Created by roman on 14.01.2018.
  */
 @IgnoreExtraProperties
-class Dialogs(var dialog_id : Long,
+class Dialogs constructor(var dialog_id : Long,
               var message : String,
               var message_id : Long,
               var timestamp : Long,
@@ -43,4 +43,6 @@ class Dialogs(var dialog_id : Long,
             return arrayOfNulls(size)
         }
     }
+    constructor() : this(-1,"",0,0,0)
+
 }

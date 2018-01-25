@@ -11,9 +11,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -24,11 +27,20 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -37,6 +49,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,7 +61,10 @@ import java.util.Map;
 import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.MainActivity;
+import moran_company.honestgram.data.City;
+import moran_company.honestgram.data.CustomLocation;
 import moran_company.honestgram.data.Dialogs;
+import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
 
 /**
@@ -69,13 +85,15 @@ public class Utility {
         showToast(context, text);
     }
 
+
     public static Comparator<Dialogs> comparator = (left, right) -> {
-        return (int)left.getMessage_id() - (int)right.getMessage_id(); // use your logic
+        return (int) left.getMessage_id() - (int) right.getMessage_id(); // use your logic
     };
 
-    public static Users getUserById(long idUser,ArrayList<Users> users){
+
+    public static Users getUserById(long idUser, ArrayList<Users> users) {
         Users userConcr = null;
-        for (Users user:users) {
+        for (Users user : users) {
             if (user.getId() == idUser)
                 userConcr = user;
         }
@@ -92,7 +110,47 @@ public class Utility {
         String photoName = (String.valueOf(stringWordsMap.get("photoName")));
         String photoURL = (String.valueOf(stringWordsMap.get("photoURL")));
         String token = (String.valueOf(stringWordsMap.get("token")));
-        Users words = new Users(id, cityId, distr, nickname, login, password, photoName, photoURL,token);
+        CustomLocation location = (CustomLocation) stringWordsMap.get("location");
+        Users words = new Users(id, cityId, distr, nickname, login, password, photoName, photoURL, token, location);
+        return words;
+
+    }
+
+    @NotNull
+    public static Object toCities(@NotNull DataSnapshot dataSnapConcr) {
+        City city;
+        Map<String, Object> stringWordsMap = new LinkedHashMap<String, Object>();
+        stringWordsMap = (Map<String, Object>) dataSnapConcr;
+
+
+        return null;
+    }
+
+    public static Users toUser2(Object objectMap) {
+        Log.d(TAG,objectMap.toString());
+        Users words;
+        Map<String, Object> stringWordsMap = new LinkedHashMap<String, Object>();
+        stringWordsMap = (Map<String, Object>) objectMap;
+        Log.d(TAG,stringWordsMap.toString());
+        long id = (Long.valueOf(String.valueOf(stringWordsMap.get("id"))));
+        String cityId = (String.valueOf(stringWordsMap.get("city")));
+        String distr = (String.valueOf(stringWordsMap.get("district")));
+        String nickname = (String.valueOf(stringWordsMap.get("nickname")));
+        String login = (String.valueOf(stringWordsMap.get("login")));
+        String password = (String.valueOf(stringWordsMap.get("password")));
+        String photoName = (String.valueOf(stringWordsMap.get("photoName")));
+        String photoURL = (String.valueOf(stringWordsMap.get("photoURL")));
+        String token = (String.valueOf(stringWordsMap.get("token")));
+        float longitude = 0;
+        float lattitude = 0;
+        if (stringWordsMap.containsKey("location")) {
+            HashMap<String, Object>location = ((HashMap<String, Object>) stringWordsMap.get("location"));
+            lattitude = (Float.valueOf(String.valueOf(location.get("latitude"))));
+            //TODO longitude
+            longitude = (Float.valueOf(String.valueOf(location.get("longitude"))));
+
+        }
+        words = new Users(id, cityId, distr, nickname, login, password, photoName, photoURL, token, new CustomLocation(longitude,lattitude));
         return words;
 
     }
@@ -126,7 +184,7 @@ public class Utility {
         PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"1")//
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "1")//
                 .setContentTitle(context.getString(R.string.app_name))//
                 .setContentText(text)//
                 //.setDefaults(Notification.DEFAULT_ALL)
@@ -162,27 +220,27 @@ public class Utility {
         return result;
     }
 
-    public static HashSet<Long> removeListsDuplicates(List<List<Dialogs>> list,long idUser) {
-        HashSet<Long>dialIdCoincidence = new HashSet<>();
-        HashSet<Long>idsAnotherUsers = new HashSet<>();
-        for (int i = 0; i <list.size() ; i++) {
-            for (int j = 0; j <list.get(i).size() ; j++) {
-                if (list.get(i).get(j).getUser_id()==idUser){
+    public static HashSet<Long> removeListsDuplicates(List<List<Dialogs>> list, long idUser) {
+        HashSet<Long> dialIdCoincidence = new HashSet<>();
+        HashSet<Long> idsAnotherUsers = new HashSet<>();
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).size(); j++) {
+                if (list.get(i).get(j).getUser_id() == idUser) {
                     dialIdCoincidence.add(list.get(i).get(j).getDialog_id());
                     break;
                 }
             }
         }
-        for (int i = 0; i <list.size() ; i++) {
-            for (int j = 0; j <list.get(i).size() ; j++) {
-                if (dialIdCoincidence.contains(list.get(i).get(j).getDialog_id())){
-                    if (list.get(i).get(j).getUser_id()!=idUser)
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).size(); j++) {
+                if (dialIdCoincidence.contains(list.get(i).get(j).getDialog_id())) {
+                    if (list.get(i).get(j).getUser_id() != idUser)
                         idsAnotherUsers.add(list.get(i).get(j).getUser_id());
                 }
 
             }
         }
-      return idsAnotherUsers;
+        return idsAnotherUsers;
     }
 
 
@@ -237,6 +295,48 @@ public class Utility {
     public static boolean checkLocationPermissions(Context context) {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /*public static MarkerOptions getMarkerOptions(String mapData,CustomLocation location) {
+        MarkerOptions markerOptions = null;
+        LatLng position = location.getLatLng();
+        int resIcon = R.drawable.ic_map_marker_green;
+        switch (mapData.getDeliveryCompany()) {
+            case "tk":
+                resIcon = R.drawable.ic_map_marker_red;
+                break;
+            case "delim":
+                resIcon = R.drawable.ic_map_marker_orange;
+                break;
+            case "pecom":
+                resIcon = R.drawable.ic_map_marker_green;
+                break;
+        }
+        markerOptions = new MarkerOptions()
+                .position(position)
+                .icon(BitmapDescriptorFactory.fromResource(resIcon))
+                .title(mapData.getHint() != null ? Utility.fromHtml(mapData.getHint()).toString() : "");
+        return markerOptions;
+    }*/
+
+    public static long getLastLocationId(ArrayList<CustomLocation>locations){
+        ArrayList<Long> ids = new ArrayList<>();
+        for (int i = 0; i <locations.size() ; i++) {
+            ids.add(locations.get(i).getId());
+        }
+        return ids.isEmpty()?0:Collections.max(ids);
+    }
+
+    public static BitmapDescriptor getBitmap(View someView) {
+        someView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        someView.layout(0, 0, someView.getMeasuredWidth(), someView.getMeasuredHeight());
+        someView.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(someView.getMeasuredWidth(), someView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        someView.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(returnedBitmap);
     }
 
 
@@ -383,4 +483,16 @@ public class Utility {
         return "";
     }
 
+
+    public static String getCityById(long cityId) {
+        ArrayList<City> cities = PreferencesData.INSTANCE.loadCities();
+        String city = "";
+        for (int i = 0; i < cities.size(); i++) {
+            if (cityId == cities.get(i).getId()) {
+                city = cities.get(i).getCity();
+                break;
+            }
+        }
+        return city;
+    }
 }

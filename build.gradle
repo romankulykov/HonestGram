@@ -51,6 +51,9 @@ ext {
     parcelerVersion = '1.1.6'
 
     dbflow_version = "4.1.1"
+
+    icepickVersion = '3.2.0'
+
     //dbflow_version = "4.0.5"
 
     //dbflow_version = "4.0.0-beta7"

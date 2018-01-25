@@ -25,7 +25,7 @@ public class AvailableContactsAdapter extends BaseAdapter<Users,AvailableContact
     public void onBindViewHolder(AvailableContactsAdapter.ViewHolder holder, int position) {
         GlideApp.with(holder.context)
                 .load(items.get(position).getPhotoURL())
-                .placeholder(R.drawable.round_frame_selector)
+                .placeholder(R.drawable.unknown)
                 .into(holder.avatarProfile);
         holder.nickname.setText(items.get(position).getNickname());
     }

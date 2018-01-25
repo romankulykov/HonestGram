@@ -6,20 +6,19 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.function.BiFunction;
 
+import durdinapps.rxfirebase2.RxFirebaseStorage;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.subscribers.DisposableSubscriber;
+import moran_company.honestgram.R;
 import moran_company.honestgram.activities.base.BaseActivity;
-import moran_company.honestgram.adapters.MenuAdapter;
 import moran_company.honestgram.base_mvp.BasePresenterImpl;
-import moran_company.honestgram.data.ImageUploadInfo;
 import moran_company.honestgram.data.ItemMenu;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
@@ -55,45 +54,53 @@ public class NavigationDrawerPresenter extends BasePresenterImpl<NavigationDrawe
     @Override
     public void newImage(String path) {
         Uri filePathUri = Uri.fromFile(new File(path));
-        Users users = PreferencesData.INSTANCE.getUser();
-        //String nameFile = storageReference.child(path).getName();
-        String nameFile = users.getNickname()+"_avatar_"+System.currentTimeMillis();
-        storageReference.child(nameFile).putFile(filePathUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    ImageUploadInfo imageUploadInfo = new ImageUploadInfo(path, taskSnapshot.getDownloadUrl().toString());
-
-                    // Getting image upload ID.
-
-                    if (!TextUtils.isEmpty(users.getPhotoName())) {
-                        storageReference.child(users.getPhotoName()).delete().addOnSuccessListener(aVoid -> {
-
-                        }).addOnFailureListener(e -> {
-                            e.printStackTrace();
-                        });
+        Users oldUser = PreferencesData.INSTANCE.getUser();
+        // Необходимо : Прокинуть в storage новую картинку, затем сохранить ее урл иназвание,
+        // получить нашего юзера и в него пропихнуть новые данные урла картинки и название и отправить в бд
+        // и затем удалить старую фотографию
+        String nameFile = oldUser.getNickname() + "_avatar_" + System.currentTimeMillis();
+        RxFirebaseStorage.putFile(mStorageReference.child(nameFile), filePathUri)
+                .toFlowable()
+                .flatMap(taskSnapshot ->
+                        getUser(taskSnapshot,oldUser))
+                .map(pairUserTask -> {
+                    Users user = pairUserTask.first.first;
+                    DataSnapshot dataSnapshot = pairUserTask.first.second;
+                    UploadTask.TaskSnapshot taskSnapshot = pairUserTask.second;
+                    user.setPhotoName(nameFile);
+                    user.setPhotoURL(taskSnapshot.getDownloadUrl().toString());
+                    dataSnapshot.getRef().setValue(user);
+                    return user;
+                })
+                .subscribe(new DisposableSubscriber<Users>() {
+                    @Override
+                    public void onNext(Users users) {
+                        mView.showToast(R.string.success);
+                        mView.setProfile(users);
                     }
-                    mUsersReference
-                            .orderByChild("id")
-                            .equalTo(users.getId())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        users.setPhotoName(nameFile);
-                                        users.setPhotoURL(taskSnapshot.getDownloadUrl().toString());
-                                        data.getRef().setValue(users);
-                                        mView.setProfile(users);
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onError(Throwable t) {
+                        mView.showToast(t.toString());
+                    }
 
-                                }
-                            });
+                    @Override
+                    public void onComplete() {
+                        if (!TextUtils.isEmpty(oldUser.getPhotoName()))
+                            RxFirebaseStorage.delete(mStorageReference.child(oldUser.getPhotoName()))
+                                    .subscribe(new DisposableCompletableObserver() {
+                                        @Override
+                                        public void onComplete() {
 
-                }).addOnFailureListener(e -> {
+                                        }
 
-        });
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            mView.showToast(e.toString());
+                                        }
+                                    });
+                    }
+                });
     }
 
     @Override
@@ -104,7 +111,6 @@ public class NavigationDrawerPresenter extends BasePresenterImpl<NavigationDrawe
     @Override
     public void onItemClicked(ItemMenu itemMenu, boolean fromMenu) {
 
-//        baseActivity.getNgseApplication().getMenuAdapter().setItemChecked(itemMenu.getMenuType());
         if (mView != null)
             mView.closeDrawer();
         if (itemMenu == null)

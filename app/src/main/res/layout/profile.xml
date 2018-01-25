@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_layout"
+    android:padding="10dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/main_marker"
+        tools:src="@drawable/ic_man_user_image_stub"
+        android:layout_marginLeft="6dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        />
+
+    <ImageView
+        android:id="@+id/background_marker"
+        android:src="@drawable/ic_pin_man"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+</FrameLayout>

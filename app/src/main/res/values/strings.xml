@@ -25,7 +25,7 @@
     <string name="product">Товары</string>
     <string name="about">О компании</string>
     <string name="cities_and_hoods">Города, районы</string>
-    <string name="contacts">Контакты</string>
+    <string name="chats">Диалоги</string>
     <string name="share">Поделиться</string>
     <string name="enter_in_application">Войти в приложение</string>
     <string name="enter">Войти</string>
@@ -51,6 +51,31 @@
     <string name="opened_conversation">С вами открыта беседа</string>
     <string name="you_write">Вы :</string>
     <string name="companion_write">Собеседник :</string>
+    <string name="success">Успешно обновлено</string>
+    <string name="success_registration">Регистрация прошла успешно</string>
+    <string name="gps_permission">Ваш GPS кажется отключен, не желаете включить его?</string>
+    <string name="necessary_gps">Необходимо включить геоданные</string>
+
+  <!--  <!DOCTYPE resources [
+    <!ENTITY foo "pertenk">
+    ]>
+
+    <string name="busy_warning">Sorry, &foo; is working hard, please try again in a moment.</string>
+    <string name="trademark">&foo; is a registered trademark, all rights reserved.</string>
+-->
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="input_mobile">Введите номер мобильного телефона</string>
+    <string name="choose_city">Выберите город</string>
+    <string name="input_interesting_products">Введите интересущие вас продукты</string>
+    <string name="apply_edits">Применить изменения</string>
+
+    <string name="special_price">Special price :</string>
+    <string name="concrete_price">%d UAH</string>
+    <string name="checkout">Оформить заказ</string>
+    <string name="success_add_to_cart">Успешно добавлено в корзину</string>
+    <string name="add_product">Добавить товар</string>
+    <string name="tracking">Слежение</string>
 
 
 </resources>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigationDrawerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fdfdfe">
+
+   <!-- <View
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <ImageView
+        android:id="@+id/closeImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/avatarProfile"
+        app:layout_constraintStart_toStartOf="@+id/avatarProfile"
+        app:layout_constraintTop_toTopOf="@+id/topView"
+        android:visibility="gone"
+        />
+
+    <!--<TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/menu_title"
+       android:textColor="@color/blackTextColor"
+       android:textSize="17sp"
+       app:layout_constraintBottom_toTopOf="@+id/avatarProfile"
+       app:layout_constraintEnd_toEndOf="@+id/topView"
+       app:layout_constraintStart_toStartOf="@+id/closeImageView"
+       app:layout_constraintTop_toTopOf="@+id/topView" />
+
+   <de.hdodenhof.circleimageview.CircleImageView
+       android:id="@+id/avatarProfile"
+       android:layout_width="70dp"
+       android:layout_height="70dp"
+       android:layout_marginStart="17dp"
+       android:layout_marginTop="14dp"
+       android:scaleType="centerCrop"
+       android:visibility="gone"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/topView"
+       app:srcCompat="@mipmap/ic_launcher" />
+
+   <TextView
+       android:id="@+id/nickname"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="14dp"
+       android:visibility="gone"
+       app:layout_constraintStart_toEndOf="@+id/avatarProfile"
+       app:layout_constraintBottom_toBottomOf="@+id/avatarProfile"
+       app:layout_constraintTop_toTopOf="@+id/avatarProfile"
+       tools:text="sdadsasdasdas" />-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mNavigationDrawerRightList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/closeImageView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/list_item_menu" />
+
+
+
+</android.support.constraint.ConstraintLayout>
