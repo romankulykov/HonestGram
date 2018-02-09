@@ -15,6 +15,7 @@ object PreferencesData {
     private val KEY_UNREGISTER = "profileUnregister"
     private val KEY_UNREGISTER_USER = "profileUnregisterUser"
     private val KEY_CITIES = "cities"
+    private val KEY_PRODUCTS = "products"
 
 
 
@@ -49,6 +50,19 @@ object PreferencesData {
     fun resetProfileUnregister() {
         save(KEY_UNREGISTER_USER, null)
     }
+
+    fun saveProducts(listProducts: ArrayList<Goods>) {
+        save(KEY_PRODUCTS, ObjectSerializer.serialize(listProducts))
+    }
+
+    fun getProducts(): ArrayList<Goods>? =
+            ObjectSerializer
+                    .deserialize(getString(KEY_PRODUCTS, ObjectSerializer.serialize(ArrayList<Goods>()))) as ArrayList<Goods>?
+
+    fun resetProducts() {
+        save(KEY_PRODUCTS, null)
+    }
+
 
     fun saveUserDialogs(listDialogs: ArrayList<List<Dialogs>>) {
         save(KEY_DIALOGS, ObjectSerializer.serialize(listDialogs))

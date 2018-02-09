@@ -14,33 +14,50 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/avatarProfile"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        tools:text="Туполев Анатолий"
+        />
     <TextView
         android:id="@+id/whoWrite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
         app:layout_constraintStart_toEndOf="@+id/avatarProfile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/avatarProfile"
+        app:layout_constraintTop_toBottomOf="@+id/name"
         tools:text="Вы пишите :"
         />
     <TextView
         android:id="@+id/lastMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:layout_constraintStart_toEndOf="@+id/whoWrite"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="sdasdsadasdasd" />
+        app:layout_constraintBottom_toBottomOf="@+id/whoWrite"
+        app:layout_constraintTop_toTopOf="@+id/whoWrite"
+        app:layout_constraintEnd_toStartOf="@id/timestamp"
+        tools:text="sdasdsadxcxxxxxxxxxxxczcxcxzcxcxzccccccccxsd"
+        android:lines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
+        />
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/whoWrite"
+        app:layout_constraintTop_toTopOf="@+id/whoWrite"
         tools:text="Yesterday" />
 
     <View

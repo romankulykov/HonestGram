@@ -3,6 +3,7 @@ package moran_company.honestgram.fragments.chat_available;
 import java.util.List;
 
 import moran_company.honestgram.base_mvp.BaseMvp;
+import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.Dialogs;
 import moran_company.honestgram.data.Users;
 
@@ -19,7 +20,7 @@ public interface ChatAvailableMvp {
     }
 
     interface Presenter extends BaseMvp.Presenter{
-        void getAvailableContacts(List<List<Dialogs>> dialogs);
+        void getAvailableContacts(List<Chats> dialogs);
 
         void createDialog(Users user, Users selectedUser);
     }

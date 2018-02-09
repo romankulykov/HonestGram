@@ -10,6 +10,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Flowable;
 import moran_company.honestgram.HonestApplication;
@@ -39,18 +40,9 @@ public abstract class BasePresenterImpl<V extends BaseMvp.View> implements BaseM
 
     protected DatabaseReference mUsersReference = mReference.child("users");
     protected DatabaseReference mDialogsReference = mReference.child("dialogs");
+    protected DatabaseReference mChatsReference = mReference.child("chats");
     protected DatabaseReference mGoodsReference = mReference.child("Goods");
     protected DatabaseReference mCitiesReference = mReference.child("cities");
-
-    protected Flowable<Pair<Pair<Users,DataSnapshot>,UploadTask.TaskSnapshot>> getUser(UploadTask.TaskSnapshot taskSnapshot, Users oldUser) {
-
-    return RxFirebaseDatabase.observeSingleValueEvent(mUsersReference, DataSnapshot::getChildren)
-                .toFlowable()
-                .flatMapIterable(dataSnapshots -> dataSnapshots)
-                .map(dataSnapshot -> Pair.create(Utility.toUser2(dataSnapshot.getValue()), dataSnapshot))
-                .filter(pairUserDatasnap -> pairUserDatasnap.first.getId() == oldUser.getId())
-                .map(pairUserData -> Pair.create(pairUserData, taskSnapshot));
-    }
 
     protected StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
 

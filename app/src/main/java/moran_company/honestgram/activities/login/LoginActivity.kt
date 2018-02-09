@@ -92,7 +92,6 @@ open class LoginActivity : BaseMvpActivity<LoginMvp.Presenter>(), LoginMvp.View 
         var resId: Int
         if (user != null) {
             showToast(R.string.found)
-            PreferencesData.saveUser(user)
             BaseActivity.newInstance(this, MainActivity::class.java, true)
             restartLocationService()
         } else

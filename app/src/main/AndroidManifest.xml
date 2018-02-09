@@ -45,6 +45,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait"
             />
+        <activity android:name=".activities.products_detail.ProductDetailActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
         <activity android:name=".activities.CartActivity"
             android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
             android:launchMode="singleTask"
@@ -96,11 +101,11 @@
             </intent-filter>
         </service>
 
-        <service
+       <!-- <service
             android:name=".services.LocationService"
             android:enabled="true"
             android:exported="true" >
-        </service>
+        </service>-->
 
         <service android:name=".services.MyService" android:process="moran_company.honestgram"
             >

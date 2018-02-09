@@ -1,52 +1,49 @@
 package moran_company.honestgram.fragments.dialogs;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import android.widget.RadioGroup;
+import android.widget.ViewFlipper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import moran_company.honestgram.R;
-import moran_company.honestgram.adapters.ChatAdapter;
 import moran_company.honestgram.adapters.DialogsAdapter;
+import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.Dialogs;
-import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.eventbus.UpdateDialogs;
 import moran_company.honestgram.fragments.base.BaseMvpFragment;
 import moran_company.honestgram.utility.DebugUtility;
-import moran_company.honestgram.utility.Utility;
 
 /**
  * Created by roman on 14.01.2018.
  */
 
 public class DialogsFragment extends BaseMvpFragment<DialogsMvp.Presenter> implements DialogsMvp.View {
-
     private static final String TAG = DialogsFragment.class.getName();
-    private List<List<Dialogs>> listDialogsList = new ArrayList<>();
+
+    private List<Chats> listChats = new ArrayList<>();
+
+    private static final int FLIPPER_LIST = 0;
+    private static final int FLIPPER_NO_DIALOGS_TEXT = 1;
 
     @BindView(R.id.chat)
     RecyclerView chat;
+    @BindView(R.id.dialogsSwitcher)
+    RadioGroup dialogsSwitcher;
+    @BindView(R.id.viewFlipper)
+    ViewFlipper viewFlipper;
 
     private MenuItem addDialog;
 
@@ -80,11 +77,30 @@ public class DialogsFragment extends BaseMvpFragment<DialogsMvp.Presenter> imple
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         chat.setAdapter(chatAdapter);
-        listDialogsList.clear();
         chatAdapter.setOnItemClickListener((itemView, item) -> {
             mBaseActivity.showChatFragment(item);
         });
         mPresenter.loadMessages();
+        dialogsSwitcher.setOnCheckedChangeListener((group, checkedId) -> filterDialogs(checkedId));
+//        filterMeetings(R.id.all_meetings_switch);
+        dialogsSwitcher.check(R.id.usersDialogs);
+    }
+
+    private void filterDialogs(int checkedId) {
+        switch (checkedId) {
+            case R.id.usersDialogs:
+                chatAdapter.setFilter(DialogsAdapter.Filter.USERS_DIALOGS);
+                break;
+            case R.id.productsDialogs:
+                chatAdapter.setFilter(DialogsAdapter.Filter.PRODUCTS_DIALOGS);
+                break;
+        }
+        updateView();
+    }
+
+    private void updateView() {
+        if (chatAdapter.getItemCount() > 0) viewFlipper.setDisplayedChild(FLIPPER_LIST);
+        else viewFlipper.setDisplayedChild(FLIPPER_NO_DIALOGS_TEXT);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -92,7 +108,6 @@ public class DialogsFragment extends BaseMvpFragment<DialogsMvp.Presenter> imple
         DebugUtility.logTest(TAG, "onUpdateProfile");
         if (update != null)
             if (update.isUpdate()) {
-                listDialogsList.clear();
                 mPresenter.loadMessages();
             }
           /*  if ((updateProfileEvent.checkLogin() == null && !(this instanceof MainActivity)))
@@ -115,28 +130,31 @@ public class DialogsFragment extends BaseMvpFragment<DialogsMvp.Presenter> imple
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item == addDialog) {
-            mBaseActivity.showAvailableContacts(listDialogsList);
+            mBaseActivity.showAvailableContacts(chatAdapter.getFilteredChats(DialogsAdapter.Filter.USERS_DIALOGS));
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void showDialogs(List<List<Dialogs>> dialogsList) {
-        if (dialogsList != null && !dialogsList.isEmpty())
-            dialogsList.get(0);
+    public void showDialogs(List<Chats> dialogsList) {
+        if (dialogsList != null && !dialogsList.isEmpty()) {
+            chatAdapter.setItems(dialogsList);
+            this.listChats = dialogsList;
+        }
+        updateView();
     }
 
     @Override
     public void addDialog(List<Dialogs> dialogs) {
-        if (dialogs != null && !dialogs.isEmpty())
+       /* if (dialogs != null && !dialogs.isEmpty())
             listDialogsList.add(dialogs);
-        Collections.sort(dialogs, Utility.comparator);
+        Collections.sort(dialogs, Utility.comparatorMessages);
         chatAdapter.setItems(listDialogsList);
         ArrayList<ArrayList<Dialogs>> d = new ArrayList<>();
         for (List<Dialogs> dial : listDialogsList) {
             d.add((ArrayList) dial);
         }
-        PreferencesData.INSTANCE.saveUserDialogs((ArrayList) listDialogsList);
+        PreferencesData.INSTANCE.saveUserDialogs((ArrayList) listDialogsList);*/
         //PreferencesData.INSTANCE.saveUserDialogs();
     }
 }

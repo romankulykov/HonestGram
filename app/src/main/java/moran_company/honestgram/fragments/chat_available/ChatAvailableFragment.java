@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import moran_company.honestgram.R;
 import moran_company.honestgram.adapters.AvailableContactsAdapter;
 import moran_company.honestgram.adapters.BaseAdapter;
+import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.Dialogs;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
@@ -40,14 +41,14 @@ public class ChatAvailableFragment extends BaseDialogFragment<ChatAvailableMvp.P
     private AvailableContactsAdapter availableContactsAdapter = new AvailableContactsAdapter();
 
     @Arg(bundler = ParcelerArgsBundler.class)
-    List<List<Dialogs>> dialogs;
+    List<Chats> dialogs;
 
     @Override
     protected ChatAvailableMvp.Presenter createPresenter() {
         return new ChatAvailablePresenter(this);
     }
 
-    public static ChatAvailableFragment newInstance(List<List<Dialogs>> dialogs) {
+    public static ChatAvailableFragment newInstance(List<Chats> dialogs) {
         ChatAvailableFragment fragment = new ChatAvailableFragmentBuilder(dialogs).build();
         return fragment;
     }

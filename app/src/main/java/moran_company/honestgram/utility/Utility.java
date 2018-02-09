@@ -48,7 +48,9 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -61,9 +63,11 @@ import java.util.Map;
 import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.MainActivity;
+import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.City;
 import moran_company.honestgram.data.CustomLocation;
 import moran_company.honestgram.data.Dialogs;
+import moran_company.honestgram.data.Goods;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
 
@@ -86,7 +90,14 @@ public class Utility {
     }
 
 
-    public static Comparator<Dialogs> comparator = (left, right) -> {
+    public static Comparator<Chats> comparatorDialogs = (left, right) -> {
+        int last = left.getDialogs().size() - 1;
+        int lastRight = right.getDialogs().size() - 1;
+        if (last == -1 || lastRight == -1) return 0;
+        return  (int) right.getDialogs().get(lastRight).getTimestamp()-(int) left.getDialogs().get(last).getTimestamp(); // use your logic
+    };
+
+    public static Comparator<Dialogs> comparatorMessages = (left, right) -> {
         return (int) left.getMessage_id() - (int) right.getMessage_id(); // use your logic
     };
 
@@ -116,16 +127,6 @@ public class Utility {
 
     }
 
-    @NotNull
-    public static Object toCities(@NotNull DataSnapshot dataSnapConcr) {
-        City city;
-        Map<String, Object> stringWordsMap = new LinkedHashMap<String, Object>();
-        stringWordsMap = (Map<String, Object>) dataSnapConcr;
-
-
-        return null;
-    }
-
     public static Users toUser2(Object objectMap) {
         Log.d(TAG,objectMap.toString());
         Users words;
@@ -146,7 +147,6 @@ public class Utility {
         if (stringWordsMap.containsKey("location")) {
             HashMap<String, Object>location = ((HashMap<String, Object>) stringWordsMap.get("location"));
             lattitude = (Float.valueOf(String.valueOf(location.get("latitude"))));
-            //TODO longitude
             longitude = (Float.valueOf(String.valueOf(location.get("longitude"))));
 
         }
@@ -155,27 +155,22 @@ public class Utility {
 
     }
 
-    public static Dialogs toDialog(Map<String, Object> stringWordsMap) {
-        long dialogId = (Long.valueOf(String.valueOf(stringWordsMap.get("dialog_id"))));
-        String message = (String.valueOf(stringWordsMap.get("message")));
-        long message_id = (Long.valueOf(String.valueOf(stringWordsMap.get("message_id"))));
-        long timestamp = (Long.valueOf(String.valueOf(stringWordsMap.get("timestamp"))));
-        long userId = (Long.valueOf(String.valueOf(stringWordsMap.get("user_id"))));
-        Dialogs dialogs = new Dialogs(dialogId, message, message_id, timestamp, userId);
-        return dialogs;
-    }
+    public static String getFormattedDate(long smsTimeInMilis) {
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(smsTimeInMilis);
 
-    public static Dialogs toDialog2(Object objectMap) {
-        Map<String, Object> stringWordsMap = new LinkedHashMap<String, Object>();
-        stringWordsMap = (Map<String, Object>) objectMap;
-        //Map<String, Object> stringWordsMap = (HashMap<String, Object>)objectMap;
-        long dialogId = (Long.valueOf(String.valueOf(stringWordsMap.get("dialog_id"))));
-        String message = (String.valueOf(stringWordsMap.get("message")));
-        long message_id = (Long.valueOf(String.valueOf(stringWordsMap.get("message_id"))));
-        long timestamp = (Long.valueOf(String.valueOf(stringWordsMap.get("timestamp"))));
-        long userId = (Long.valueOf(String.valueOf(stringWordsMap.get("user_id"))));
-        Dialogs dialogs = new Dialogs(dialogId, message, message_id, timestamp, userId);
-        return dialogs;
+        Calendar now = Calendar.getInstance();
+
+        final String timeFormatString = "h:mm aa";
+        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE) ) {
+            return "Сегодня " + new SimpleDateFormat(timeFormatString).format(new Date(smsTimeInMilis));
+        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1  ){
+            return "Вчера " + new SimpleDateFormat(timeFormatString).format(new Date(smsTimeInMilis));
+        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
+            return new SimpleDateFormat("MMMM dd HH:mm:ss").format(new Date(smsTimeInMilis));
+        } else {
+            return new SimpleDateFormat("MMMM dd yyyy, h:mm aa").format(new Date(smsTimeInMilis));
+        }
     }
 
     public static void showNotification(Context context, String text) {
@@ -201,41 +196,32 @@ public class Utility {
         notificationManager.notify(1, notification);
     }
 
-    public static ArrayList<Dialogs> removeDuplicates(List<Dialogs> list) {
 
-        // Store unique items in result.
-        ArrayList<Dialogs> result = new ArrayList<>();
-
-        // Record encountered Strings in HashSet.
-        HashSet<Long> set = new HashSet<>();
-
-        // Loop over argument list.
-        for (Dialogs item : list) {
-            // If String is not in set, add it to the list and the set.
-            if (!set.contains(item.getDialog_id())) {
-                result.add(item);
-                set.add(item.getDialog_id());
-            }
+    public static boolean isConcreteUserExistInLIst(List<Chats> chats,long anotherUserId){
+       // boolean flag = false;
+        for (int i = 0; i < chats.size(); i++) {
+            if (chats.get(i).getOwnerId() == anotherUserId || chats.get(i).getCompanionId() == anotherUserId)
+                return false;
         }
-        return result;
+        return true;
     }
 
-    public static HashSet<Long> removeListsDuplicates(List<List<Dialogs>> list, long idUser) {
+    public static HashSet<Long> removeListsDuplicates(List<Chats> list, long idUser) {
         HashSet<Long> dialIdCoincidence = new HashSet<>();
         HashSet<Long> idsAnotherUsers = new HashSet<>();
         for (int i = 0; i < list.size(); i++) {
-            for (int j = 0; j < list.get(i).size(); j++) {
-                if (list.get(i).get(j).getUser_id() == idUser) {
-                    dialIdCoincidence.add(list.get(i).get(j).getDialog_id());
+            for (int j = 0; j < list.get(i).getDialogs().size(); j++) {
+                if (list.get(i).getDialogs().get(j).getUser_id() == idUser) {
+                    dialIdCoincidence.add(list.get(i).getDialogs().get(j).getDialog_id());
                     break;
                 }
             }
         }
         for (int i = 0; i < list.size(); i++) {
-            for (int j = 0; j < list.get(i).size(); j++) {
-                if (dialIdCoincidence.contains(list.get(i).get(j).getDialog_id())) {
-                    if (list.get(i).get(j).getUser_id() != idUser)
-                        idsAnotherUsers.add(list.get(i).get(j).getUser_id());
+            for (int j = 0; j < list.get(i).getDialogs().size(); j++) {
+                if (dialIdCoincidence.contains(list.get(i).getDialogs().get(j).getDialog_id())) {
+                    if (list.get(i).getDialogs().get(j).getUser_id() != idUser)
+                        idsAnotherUsers.add(list.get(i).getDialogs().get(j).getUser_id());
                 }
 
             }
@@ -495,4 +481,13 @@ public class Utility {
         }
         return city;
     }
+
+    public static Goods getProductById(long id){
+        ArrayList<Goods>goods = PreferencesData.INSTANCE.getProducts();
+        for (int i = 0; i < goods.size(); i++) {
+            if (goods.get(i).getId()==id) return goods.get(i);
+        }
+        return null;
+    }
+
 }

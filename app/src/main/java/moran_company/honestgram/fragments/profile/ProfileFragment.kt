@@ -21,17 +21,21 @@ class ProfileFragment : BaseMvpFragment<ProfileMvp.Presenter>(), ProfileMvp.View
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.loadCities()
+
     }
 
     override fun showCities(list: ArrayList<City>) {
         var listCities = ArrayList<String>()
-        for (user in list) {
+        /*for (user in list) {
             listCities.add(user.city)
-        }
-        val categoryAdapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, listCities)
+        }*/
+        if (list != null) {
+            list.mapTo(listCities) { it.city }
+            val categoryAdapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, listCities)
 
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        cities.adapter = categoryAdapter
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            cities.adapter = categoryAdapter
+        }
     }
 
 

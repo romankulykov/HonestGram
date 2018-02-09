@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/half_default_padding"
-
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/allports"
+        android:background="@drawable/rounded_textview_other_message"
+        android:layout_marginRight="55dp"
         android:orientation="vertical">
 
         <TextView
@@ -37,8 +38,17 @@
             android:layout_marginRight="@dimen/half_default_padding"
             android:textColor="#96a4ba"
             android:textSize="@dimen/x_small_text_size" />
-
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/attachedPhoto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/layout"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
+        />
 
 
 </RelativeLayout>

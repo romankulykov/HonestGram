@@ -13,12 +13,18 @@ public interface ChatMvp {
 
     interface View extends BaseMvp.View{
         void showDialogs(List<Dialogs> dialogsList);
+
+        void showUrlPhoto(String url);
+
+        void successSend();
     }
 
     interface Presenter extends BaseMvp.Presenter{
         void loadMessages(long dialogId);
 
-        void sendMessage(String s,long dialogId,long messageId);
+        void sendMessage(String s,long dialogId,long messageId,String url);
+
+        void attachImage(String path,long chatId);
     }
 
 }

@@ -3,6 +3,7 @@ package moran_company.honestgram.fragments.navigation_drawer;
 
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import com.google.firebase.database.DataSnapshot;
@@ -14,7 +15,9 @@ import java.util.function.BiFunction;
 import durdinapps.rxfirebase2.RxFirebaseStorage;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.base.BaseActivity;
@@ -58,20 +61,24 @@ public class NavigationDrawerPresenter extends BasePresenterImpl<NavigationDrawe
         // Необходимо : Прокинуть в storage новую картинку, затем сохранить ее урл иназвание,
         // получить нашего юзера и в него пропихнуть новые данные урла картинки и название и отправить в бд
         // и затем удалить старую фотографию
+        String oldPhotoName = oldUser.getPhotoName();
         String nameFile = oldUser.getNickname() + "_avatar_" + System.currentTimeMillis();
         RxFirebaseStorage.putFile(mStorageReference.child(nameFile), filePathUri)
                 .toFlowable()
                 .flatMap(taskSnapshot ->
-                        getUser(taskSnapshot,oldUser))
-                .map(pairUserTask -> {
-                    Users user = pairUserTask.first.first;
-                    DataSnapshot dataSnapshot = pairUserTask.first.second;
-                    UploadTask.TaskSnapshot taskSnapshot = pairUserTask.second;
-                    user.setPhotoName(nameFile);
-                    user.setPhotoURL(taskSnapshot.getDownloadUrl().toString());
-                    dataSnapshot.getRef().setValue(user);
-                    return user;
+                        Flowable.zip(apiClient.getKeyById(oldUser.getId(),mUsersReference),Flowable.just(taskSnapshot),
+                                Pair::create))
+                .map(pair -> {
+                    Users newUser = oldUser;
+                    String key = pair.first;
+                    UploadTask.TaskSnapshot taskSnapshot = pair.second;
+                    newUser.setPhotoName(nameFile);
+                    newUser.setPhotoURL(taskSnapshot.getDownloadUrl().toString());
+                    mUsersReference.child(key).setValue(newUser);
+                    return newUser;
                 })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableSubscriber<Users>() {
                     @Override
                     public void onNext(Users users) {
@@ -86,8 +93,8 @@ public class NavigationDrawerPresenter extends BasePresenterImpl<NavigationDrawe
 
                     @Override
                     public void onComplete() {
-                        if (!TextUtils.isEmpty(oldUser.getPhotoName()))
-                            RxFirebaseStorage.delete(mStorageReference.child(oldUser.getPhotoName()))
+                        if (!TextUtils.isEmpty(oldPhotoName))
+                            RxFirebaseStorage.delete(mStorageReference.child(oldPhotoName))
                                     .subscribe(new DisposableCompletableObserver() {
                                         @Override
                                         public void onComplete() {

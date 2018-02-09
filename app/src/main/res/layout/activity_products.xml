@@ -107,58 +107,6 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-      <!--  <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            app:layout_anchor="@id/appbar"
-            app:layout_anchorGravity="start"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
-
-          <!--  <android.support.v7.widget.Toolbar
-                android:id="@+id/secondToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/holo_red_light"
-                android:gravity="center"
-                app:layout_anchor="@+id/appbar"
-                app:layout_anchorGravity="bottom"
-                android:visibility="visible"
-                attr:theme="@style/ToolBarStyle">
-
-
-                <ImageView
-                    android:id="@+id/secondMenuBackImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:padding="@dimen/default_padding"
-                    android:src="@android:drawable/arrow_up_float" />
-
-                <TextView
-                    android:id="@+id/secondBarTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    tools:text="Меню продавца" />
-
-                <ImageView
-                    android:id="@+id/secondMenuImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="@dimen/default_margin"
-                    android:padding="@dimen/default_padding"
-                    android:src="@drawable/ic_filter" />
-
-            </android.support.v7.widget.Toolbar>-->
-        <!--</android.support.design.widget.AppBarLayout>-->
-
-
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
@@ -167,8 +115,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolBar"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@+id/toolBar">
 
         </android.support.v4.widget.NestedScrollView>
 

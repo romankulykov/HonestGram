@@ -12,7 +12,6 @@ import moran_company.honestgram.data.PreferencesData
 class ProfilePresenter(view: ProfileMvp.View?) : BasePresenterImpl<ProfileMvp.View>(view), ProfileMvp.Presenter {
 
     override fun loadCities() {
-
         RxFirebaseDatabase
                 .observeSingleValueEvent(mCitiesReference, DataSnapshotMapper.listOf(City::class.java))
                 .subscribe { list ->

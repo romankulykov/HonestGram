@@ -3,9 +3,11 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/fcm/HonestFirebaseInstanceIdService.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/fcm/HonestFirebaseMessagingService.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/fragments/ZoomPhotoFragment.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/fragments/map/MapFragment.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/fragments/map/MapMvp.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/fragments/map/MapPresenter.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/moran_company/honestgram/utility/RetrofitUtils.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_zoom_image.xml" charset="windows-1251" />
   </component>
 </project>

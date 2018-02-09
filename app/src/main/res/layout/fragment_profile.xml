@@ -4,93 +4,109 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/saffron"
-    android:padding="@dimen/default_padding">
+    android:background="@color/saffron">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avatarProfile"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/unknown"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/default_padding">
 
-    <EditText
-        android:id="@+id/nickname"
-        style="@style/EditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:hint="@string/input_nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/avatarProfile"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatarProfile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/unknown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        />
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginLeft="4dp"
-        android:background="@drawable/rounded_button_color_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/avatarProfile"
-        app:layout_constraintTop_toBottomOf="@id/nickname">
-
-        <fr.ganfra.materialspinner.MaterialSpinner
-            android:id="@+id/cities"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/nickname"
+            style="@style/EditTextStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
-            android:singleLine="true"
-            app:ms_alignLabels="false"
-            app:ms_arrowColor="@android:color/darker_gray"
-            app:ms_arrowSize="10dp"
-            app:ms_hint="@string/choose_city"
-            app:ms_floatingLabelText="@string/choose_city"
-            app:ms_multiline="false" />
-    </RelativeLayout>
+            android:layout_marginLeft="4dp"
+            android:hint="@string/input_nickname"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatarProfile"
 
-    <EditText
-        android:id="@+id/mobile"
-        style="@style/EditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="@string/input_mobile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/avatarProfile" />
+            />
 
-    <EditText
-        android:id="@+id/interesting"
-        style="@style/EditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="@string/input_interesting_products"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mobile" />
+        <!--<Spinner
+            android:id="@+id/cities"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatarProfile"
+            app:layout_constraintTop_toBottomOf="@id/nickname"
+            />-->
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_button_color_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatarProfile"
+            app:layout_constraintTop_toBottomOf="@id/nickname">
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/cities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:singleLine="true"
+                app:ms_alignLabels="false"
+                app:ms_arrowColor="@android:color/darker_gray"
+                app:ms_arrowSize="10dp"
+                app:ms_floatingLabelText="@string/choose_city"
+                app:ms_hint="@string/choose_city"
+                app:ms_multiline="false" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/mobile"
+            style="@style/EditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/input_mobile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avatarProfile" />
+
+        <EditText
+            android:id="@+id/interesting"
+            style="@style/EditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/input_interesting_products"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mobile" />
+    </android.support.constraint.ConstraintLayout>
+
 
     <TextView
         android:id="@+id/apply"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="22dp"
-        android:layout_marginTop="12dp"
+        android:background="@drawable/custom_text_view"
+        android:gravity="center"
         android:paddingBottom="12dp"
         android:paddingTop="12dp"
-        android:gravity="center"
+        android:text="@string/apply_edits"
         android:textColor="@android:color/white"
         android:textSize="@dimen/x_big_text_size"
-        android:background="@drawable/rounded_textview_color"
-        android:text="@string/apply_edits"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 
         />
-
 
 
 </android.support.constraint.ConstraintLayout>

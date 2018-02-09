@@ -1,15 +1,24 @@
 package moran_company.honestgram.adapters;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
+import butterknife.OnClick;
+import moran_company.honestgram.GlideApp;
 import moran_company.honestgram.R;
 import moran_company.honestgram.data.Dialogs;
+import moran_company.honestgram.data.Goods;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
+import moran_company.honestgram.utility.Utility;
 
 
 public class ChatAdapter extends BaseAdapter<Dialogs, ChatAdapter.ViewHolder> {
@@ -19,6 +28,16 @@ public class ChatAdapter extends BaseAdapter<Dialogs, ChatAdapter.ViewHolder> {
     private static final int LAYOUT_FRIEND_MESSAGE = 1;
     private static final int LAYOUT_OPENED_MESSAGE = 2;
     private Users mUserProfile = PreferencesData.INSTANCE.getUser();
+
+    private OnPhotoClick onPhotoClick;
+
+    public interface OnPhotoClick {
+        void photoClick(String url);
+    }
+
+    public void setOnPhotoClickListener(OnPhotoClick onPhotoClick) {
+        this.onPhotoClick = onPhotoClick;
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -57,7 +76,15 @@ public class ChatAdapter extends BaseAdapter<Dialogs, ChatAdapter.ViewHolder> {
         Dialogs chatMessage = items.get(position);
         if (chatMessage.getMessage_id() != 0) {
             holder.messageBody.setText(chatMessage.getMessage());
-            holder.messageTime.setText(chatMessage.getTimestamp() + "");
+            //holder.messageTime.setText(new SimpleDateFormat("MMMM dd HH:mm:ss").format(new Date(chatMessage.getTimestamp())));
+            holder.messageTime.setText(Utility.getFormattedDate(chatMessage.getTimestamp()));
+            if (!TextUtils.isEmpty(chatMessage.getUrl())){
+                GlideApp.with(holder.context)
+                        .load(chatMessage.getUrl())
+                        .into(holder.attachedPhoto);
+                holder.attachedPhoto.setVisibility(View.VISIBLE);
+            } else
+                holder.attachedPhoto.setVisibility(View.GONE);
         } else {
             holder.itemView.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
         }
@@ -69,9 +96,16 @@ public class ChatAdapter extends BaseAdapter<Dialogs, ChatAdapter.ViewHolder> {
         TextView messageBody;
         @BindView(R.id.messageTime)
         TextView messageTime;
+        @BindView(R.id.attachedPhoto)
+        ImageView attachedPhoto;
 
         public ViewHolder(OnViewHolderEventListener listener, View itemView) {
             super(listener, itemView);
+        }
+
+        @OnClick(R.id.attachedPhoto)
+        void clickPhoto() {
+            onPhotoClick.photoClick(items.get(getAdapterPosition()).getUrl());
         }
     }
 }

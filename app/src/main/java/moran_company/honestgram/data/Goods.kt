@@ -9,17 +9,29 @@ import java.io.Serializable
  * Created by roman on 12.01.2018.
  */
 @IgnoreExtraProperties
-class Goods(var id : Long,var title : String,var price : Long,var url : String,var cityId : Long ) : Parcelable,Serializable {
+class Goods(var id : Long,var title : String,var price : Long,
+            var url : String,var cityId : Long,var description : String,
+            var ownerId : Long,var specialPrice : Long ) : Parcelable,Serializable {
 
-    constructor() : this(0,"",0,"",0)
 
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
             parcel.readString(),
             parcel.readLong(),
             parcel.readString(),
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readLong(),
             parcel.readLong()) {
     }
+
+    var urls : ArrayList<Urls>? = null
+
+    constructor(urls : ArrayList<Urls>) : this(0,"",0,"",0,"",0,0){
+        this.urls = urls
+    }
+
+    constructor() : this(0,"",0,"",0,"",0,0)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)
@@ -27,6 +39,9 @@ class Goods(var id : Long,var title : String,var price : Long,var url : String,v
         parcel.writeLong(price)
         parcel.writeString(url)
         parcel.writeLong(cityId)
+        parcel.writeString(description)
+        parcel.writeLong(ownerId)
+        parcel.writeLong(specialPrice)
     }
 
     override fun describeContents(): Int {
@@ -42,6 +57,5 @@ class Goods(var id : Long,var title : String,var price : Long,var url : String,v
             return arrayOfNulls(size)
         }
     }
-
 
 }

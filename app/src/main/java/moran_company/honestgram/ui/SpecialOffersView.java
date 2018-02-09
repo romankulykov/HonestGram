@@ -21,19 +21,20 @@ import moran_company.honestgram.data.Goods;
  * Created by roman on 24.01.2018.
  */
 
-public class SpecialOffersView extends ConstraintLayout implements SpecialOfferAdapter.OnBannerClick ,ViewPager.OnPageChangeListener{
+public class SpecialOffersView<T> extends ConstraintLayout implements SpecialOfferAdapter.OnBannerClick ,ViewPager.OnPageChangeListener{
 
     private SpecialOfferAdapter mAdapter;
 
-    ArrayList<Goods> mGoods = new ArrayList<>();
+    ArrayList<T> mGoods = new ArrayList<>();
+
+    ArrayList<String> urls = new ArrayList<>();
 
     private Timer mTimer;
-
 
     @BindView(R.id.viewPager)
     ViewPager viewPager;
     @BindView(R.id.indicator)
-    CircleIndicator dotsView;
+    CircleIndicator circleIndicator;
 
     public SpecialOffersView(Context context) {
         super(context);
@@ -59,27 +60,35 @@ public class SpecialOffersView extends ConstraintLayout implements SpecialOfferA
         mAdapter = new SpecialOfferAdapter(mGoods,this);
         viewPager.setAdapter(mAdapter);
         viewPager.addOnPageChangeListener(this);
-        dotsView.setViewPager(viewPager);
-        mAdapter.registerDataSetObserver(dotsView.getDataSetObserver());
+        circleIndicator.setViewPager(viewPager);
+        mAdapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
 
     }
 
-    public ArrayList<Goods> getmGoods() {
-        return mGoods;
+    public void setCircleIndicatorVisibility() {
+
+        //TODO circleIndicator.setVisibility();
     }
 
-    public void setmGoods(ArrayList<Goods> mGoods) {
+
+    public void setGoods(ArrayList<T> mGoods,boolean rounded) {
         this.mGoods = mGoods;
-        initGoods();
+        initGoods(rounded);
     }
 
-    private void initGoods() {
+    public void setListGoods(ArrayList<Goods> mGoods,boolean rounded){
+        this.mGoods = (ArrayList<T>) mGoods;
+        initGoods(rounded);
+    }
+
+    private void initGoods(boolean rounded) {
        // mGoods.clear();
 
         if (mGoods.isEmpty())
             getLayoutParams().height = 0;
         else {
-            mAdapter.setmItems(mGoods);
+            mAdapter.setItems(mGoods);
+            mAdapter.setWithRoundedCorners(rounded);
             startTimer();
             //getLayoutParams().height = LayoutParams.WRAP_CONTENT;
         }

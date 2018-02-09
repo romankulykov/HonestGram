@@ -15,6 +15,8 @@ interface MainMvp {
     interface Presenter : BaseMvp.Presenter{
         fun init()
         fun loadOffers()
+        fun loadCities()
+        fun loadProducts()
     }
 
 }

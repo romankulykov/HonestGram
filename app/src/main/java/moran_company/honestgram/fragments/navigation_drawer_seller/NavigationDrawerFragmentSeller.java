@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,6 +40,7 @@ import moran_company.honestgram.activities.base.BaseActivity;
 import moran_company.honestgram.activities.login.LoginActivity;
 import moran_company.honestgram.adapters.MenuAdapter;
 import moran_company.honestgram.custom.DividerItemDecoration;
+import moran_company.honestgram.data.ItemMenu;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
 import moran_company.honestgram.eventbus.UpdateDialogs;
@@ -164,9 +166,9 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 //super.onDrawerSlide(drawerView, slideOffset);
-                /*float moveFactor = (mNavigationDrawerView.getWidth() * slideOffset);
+                float moveFactor = (mNavigationDrawerView.getWidth() * slideOffset);
                 if (onDrawerSlideListener != null)
-                    onDrawerSlideListener.onTranslateContainer(moveFactor);*/
+                    onDrawerSlideListener.onTranslateContainer(moveFactor);
                 //EventBus.getDefault().post(new UpdateNavigation(true));
 
                 mBaseActivity.setOpen(true);
@@ -243,6 +245,25 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemClicked(ItemMenu itemMenu, boolean fromMenu) {
+        closeDrawer();
+        if (itemMenu == null)
+            return;
+        DebugUtility.logTest(TAG, itemMenu.getMenuType() + "");
+        Handler h = new Handler();
+        h.postDelayed(() -> {
+            switch (itemMenu.getMenuType()){
+                case CHAT_DETAIL:
+                    mBaseActivity.showMapFragment();
+
+                    break;
+            }
+            //BaseActivity.showActivity(baseActivity, itemMenu);
+        }, fromMenu ? 250 : 0);
+
+    }
+
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
@@ -262,7 +283,7 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
         setDrawerIndicatorEnabled(true);
     }
 
-    private void setDrawerLockMode(int lockMode, int edgeGravity) {
+    public void setDrawerLockMode(int lockMode, int edgeGravity) {
         if (drawerLayout != null)
             drawerLayout.setDrawerLockMode(lockMode, edgeGravity);
     }

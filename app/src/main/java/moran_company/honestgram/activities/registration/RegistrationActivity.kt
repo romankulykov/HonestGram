@@ -100,7 +100,7 @@ class RegistrationActivity : BaseMvpActivity<RegistrationMvp.Presenter>(), Regis
 
     override fun successRegistration(user: Users) {
         showToast(R.string.success_registration)
-        BaseActivity.newInstance(this, LoginActivity::class.java, true)
+        BaseActivity.newInstance(this, LoginActivity::class.java, false)
     }
 
 

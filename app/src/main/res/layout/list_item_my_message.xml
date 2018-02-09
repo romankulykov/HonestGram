@@ -2,15 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/half_default_padding"
 
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="@color/saffron"
+        android:background="@drawable/rounded_textview_my_message"
+        android:layout_marginLeft="55dp"
         android:orientation="vertical">
 
         <TextView
@@ -22,7 +25,7 @@
             android:layout_marginRight="@dimen/half_default_padding"
             android:gravity="center_vertical"
             android:minWidth="100dp"
-
+            tools:text="ddddddasdasddasdadddddddddddddxzcxcddddddddddddddddddddddddddddddddddddddd"
             android:padding="@dimen/half_default_padding"
             android:paddingLeft="@dimen/half_default_padding"
             android:paddingRight="@dimen/half_default_padding"
@@ -40,6 +43,15 @@
             android:textSize="@dimen/x_small_text_size" />
 
     </LinearLayout>
+    <ImageView
+        android:id="@+id/attachedPhoto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/layout"
+        android:layout_alignParentRight="true"
+        android:visibility="visible"
+        />
 
 
 </RelativeLayout>

@@ -1,20 +1,11 @@
 package moran_company.honestgram.fragments.navigation_drawer_seller;
 
 
-import android.net.Uri;
 import android.os.Handler;
-import android.text.TextUtils;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import durdinapps.rxfirebase2.RxFirebaseStorage;
-import io.reactivex.observers.DisposableCompletableObserver;
-import io.reactivex.subscribers.DisposableSubscriber;
 import moran_company.honestgram.R;
 import moran_company.honestgram.activities.ProductsActivity;
 import moran_company.honestgram.activities.base.BaseActivity;
@@ -22,9 +13,6 @@ import moran_company.honestgram.activities.map.MapActivity;
 import moran_company.honestgram.adapters.MenuAdapter;
 import moran_company.honestgram.base_mvp.BasePresenterImpl;
 import moran_company.honestgram.data.ItemMenu;
-import moran_company.honestgram.data.PreferencesData;
-import moran_company.honestgram.data.Users;
-import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerMvp;
 import moran_company.honestgram.utility.DebugUtility;
 
 
@@ -48,11 +36,17 @@ public class NavigationDrawerSellerPresenter extends BasePresenterImpl<Navigatio
     public void onResume(BaseActivity baseActivity, NavigationDrawerSellerMvp.View view) {
         this.baseActivity = baseActivity;
         this.mView = view;
-        if (baseActivity.getHonestApplication().getMenuAdapter() != null) {
-            baseActivity.getHonestApplication().getMenuAdapter().
-                    setOnItemClickListener((itemView, item) -> onItemClicked(item, true));
+/*
+        if (baseActivity.getHonestApplication().getRightMenuAdapter() != null) {
+            baseActivity.getHonestApplication().getRightMenuAdapter().
+                    setOnItemClickListener((itemView, item) -> mView.onItemClicked(item, true));
             mView.setAdapter(getRightMenuAdapter(getTypeMenu()));
         }
+*/
+        mView.setAdapter(getRightMenuAdapter(getTypeMenu()));
+        getRightMenuAdapter(getTypeMenu()).
+                setOnItemClickListener((itemView, item) -> mView.onItemClicked(item, true));
+
     }
 
     public MenuAdapter getRightMenuAdapter(ItemMenu.MENU_TYPE menuType) {
@@ -75,6 +69,17 @@ public class NavigationDrawerSellerPresenter extends BasePresenterImpl<Navigatio
         mRightMenuAdapter.setItems(menu);
     }
 
+    public void updateRightMenu(ItemMenu.MENU_TYPE menuType){
+        List<ItemMenu> menu = new ArrayList<>();
+        switch (menuType){
+            case CHAT_DETAIL:
+                menu.add(new ItemMenu(R.string.ship_product,0, ItemMenu.MENU_TYPE.ADD_PRODUCT));
+                break;
+        }
+        mRightMenuAdapter = new MenuAdapter(R.layout.list_item_menu);
+        mRightMenuAdapter.setItems(menu);
+    }
+
 
 
     @Override
@@ -82,7 +87,7 @@ public class NavigationDrawerSellerPresenter extends BasePresenterImpl<Navigatio
         mView = null;
     }
 
-    @Override
+    /*@Override
     public void onItemClicked(ItemMenu itemMenu, boolean fromMenu) {
 
         if (mView != null)
@@ -92,10 +97,13 @@ public class NavigationDrawerSellerPresenter extends BasePresenterImpl<Navigatio
         DebugUtility.logTest(TAG, itemMenu.getMenuType() + "");
         Handler h = new Handler();
         h.postDelayed(() -> {
-            BaseActivity.showActivity(baseActivity, itemMenu);
+            //BaseActivity.showActivity(baseActivity, itemMenu);
+            if (itemMenu.getMenuType()== ItemMenu.MENU_TYPE.CHAT_DETAIL){
+
+            }
         }, fromMenu ? 250 : 0);
 
-    }
+    }*/
 
     public ItemMenu.MENU_TYPE getTypeMenu() {
         ItemMenu.MENU_TYPE menuType = ItemMenu.MENU_TYPE.NONE;

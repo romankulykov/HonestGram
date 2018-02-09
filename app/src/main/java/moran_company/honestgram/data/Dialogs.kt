@@ -13,14 +13,19 @@ class Dialogs constructor(var dialog_id : Long,
               var message : String,
               var message_id : Long,
               var timestamp : Long,
-              var user_id: Long) : Parcelable,Serializable {
+              var user_id: Long,
+              var url : String?) : Parcelable,Serializable {
+
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
             parcel.readString(),
             parcel.readLong(),
             parcel.readLong(),
-            parcel.readLong()) {
+            parcel.readLong(),
+            parcel.readString()) {
     }
+
+    constructor() : this(-1,"",0,0,0,"")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(dialog_id)
@@ -28,6 +33,7 @@ class Dialogs constructor(var dialog_id : Long,
         parcel.writeLong(message_id)
         parcel.writeLong(timestamp)
         parcel.writeLong(user_id)
+        parcel.writeString(url)
     }
 
     override fun describeContents(): Int {
@@ -43,6 +49,5 @@ class Dialogs constructor(var dialog_id : Long,
             return arrayOfNulls(size)
         }
     }
-    constructor() : this(-1,"",0,0,0)
 
 }

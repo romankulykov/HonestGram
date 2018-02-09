@@ -76,6 +76,11 @@
     <string name="success_add_to_cart">Успешно добавлено в корзину</string>
     <string name="add_product">Добавить товар</string>
     <string name="tracking">Слежение</string>
+    <string name="users_dialogs">Пользовательские диалоги</string>
+    <string name="products_dialogs">Диалоги по товарам</string>
+    <string name="no_meetings">Диалогов пока что нет, добавьте собеседника</string>
+    <string name="new_conversation">Новая беседа</string>
+    <string name="ship_product">Отгрузить товар</string>
 
 
 </resources>

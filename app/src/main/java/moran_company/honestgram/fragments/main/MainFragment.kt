@@ -8,7 +8,6 @@ import moran_company.honestgram.activities.base.BaseActivity
 import moran_company.honestgram.adapters.MenuAdapter
 import moran_company.honestgram.data.Goods
 import moran_company.honestgram.data.ItemMenu
-import moran_company.honestgram.data.PreferencesData
 import moran_company.honestgram.fragments.base.BaseMvpFragment
 
 /**
@@ -33,6 +32,8 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
     override fun onResume() {
         super.onResume()
         mPresenter.loadOffers()
+        mPresenter.loadCities()
+        mPresenter.loadProducts()
         /*var user = PreferencesData.getUser()
         var sizeCart = user?.cart?.size?:0
         mBaseActivity.setBasketCounter(sizeCart)*/
@@ -44,9 +45,10 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
         var menu : MutableList<ItemMenu> = ArrayList()
         //mBaseActivity.navigationDrawerFragment.setProfile(PreferencesData.getUser())
 
+        menu.add(ItemMenu(R.string.menu_profile,android.R.color.white,ItemMenu.MENU_TYPE.PROFILE))
         menu.add(ItemMenu(R.string.product,android.R.color.white,ItemMenu.MENU_TYPE.PRODUCTS))
         menu.add(ItemMenu(R.string.about,android.R.color.white,ItemMenu.MENU_TYPE.ABOUT))
-        menu.add(ItemMenu(R.string.cities_and_hoods,android.R.color.white,ItemMenu.MENU_TYPE.CITIES_AND_HOODS))
+        //menu.add(ItemMenu(R.string.cities_and_hoods,android.R.color.white,ItemMenu.MENU_TYPE.CITIES_AND_HOODS))
         menu.add(ItemMenu(R.string.menu_map,android.R.color.white,ItemMenu.MENU_TYPE.MAP))
         menu.add(ItemMenu(R.string.chats,android.R.color.white,ItemMenu.MENU_TYPE.CHATS))
         menu.add(ItemMenu(R.string.share,android.R.color.white,ItemMenu.MENU_TYPE.SHARE))
@@ -88,10 +90,11 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
         pager.adapter = adapter
         indicator.setViewPager(pager)
         adapter.registerDataSetObserver(indicator.dataSetObserver)*/
-        specialOffer.setmGoods(goods as java.util.ArrayList<Goods>)
+
+        specialOffer.setListGoods(goods as java.util.ArrayList<Goods>,true)
 
 
-        //specialOffer.setmGoods(goods as ArrayList<Goods>)
+        //specialOffer.setGoods(goods as ArrayList<Goods>)
 
     }
 

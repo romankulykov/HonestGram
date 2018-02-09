@@ -18,12 +18,13 @@ public interface NavigationDrawerSellerMvp {
 
         void setAdapter(MenuAdapter menuAdapter);
 
+        void onItemClicked(ItemMenu itemMenu, boolean fromMenu);
 
     }
 
     interface Presenter extends BaseMvp.Presenter {
 
-        void onItemClicked(ItemMenu itemMenu, boolean fromMenu);
+        //void onItemClicked(ItemMenu itemMenu, boolean fromMenu);
 
         void onStop();
 

@@ -70,11 +70,11 @@ class RegistrationPresenter : BasePresenterImpl<RegistrationMvp.View>, Registrat
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ users ->
                     if (!users.isEmpty()) {
-                        PreferencesData.saveUser(users.get(0))
+                        //PreferencesData.saveUser(users.get(0))
                         mView.showToast(R.string.already_exist)
                     } else {
                         var token: String? = FirebaseInstanceId.getInstance().getToken()
-                        var user = Users(lastId!!.inc(), "Kyiv", "Pecherskiy", nickname, login, password, "", "", token, locationUser)
+                        var user = Users(lastId!!.inc(), "Kyiv", "Pecherskiy", nickname, login, password, "", "", token, locationUser,null,null,4)
                         mUsersReference?.push()?.setValue(user)
                         mView.successRegistration(user)
                     }

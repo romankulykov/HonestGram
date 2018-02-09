@@ -11,6 +11,7 @@ import java.io.Serializable
  * Created by roman on 12.01.2018.
  */
 @IgnoreExtraProperties
+@org.parceler.Parcel(value = org.parceler.Parcel.Serialization.BEAN)
 class Users constructor(
         var id: Long,
         var city: String,
@@ -43,6 +44,7 @@ class Users constructor(
 
     var locations: ArrayList<CustomLocation>? = null
     var cart: ArrayList<Goods>? = null
+    var statusId: Long? = null
 
     constructor(
             id: Long,
@@ -56,9 +58,11 @@ class Users constructor(
             token: String?,
             location: CustomLocation?,
             locations: ArrayList<CustomLocation>?,
-            cart: ArrayList<Goods>?) : this(id, city, district, nickname, login, password, photoName, photoURL, token, location) {
+            cart: ArrayList<Goods>?,
+            statusId : Long?) : this(id, city, district, nickname, login, password, photoName, photoURL, token, location) {
         this.locations = locations
         this.cart = cart
+        this.statusId = statusId
     }
 
 

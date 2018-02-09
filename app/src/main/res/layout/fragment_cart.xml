@@ -16,7 +16,7 @@
         android:id="@+id/checkout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_textview_color"
+        android:background="@drawable/custom_text_view"
         android:gravity="center"
         android:paddingBottom="12dp"
         android:paddingTop="12dp"

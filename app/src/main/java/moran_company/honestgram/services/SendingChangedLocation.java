@@ -12,6 +12,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -61,32 +62,28 @@ public class SendingChangedLocation {
                     return new CustomLocation(longitude, latitude);
                 })
                 .flatMap(customLocation -> getUser(user, customLocation),
-                        (customLocation, usersDataSnapshotPair) -> {
-                            if (usersDataSnapshotPair.first != null) {
-                                usersDataSnapshotPair.first.setLocation(customLocation);
-                                Log.d(TAG, "after flatMap USer = " + usersDataSnapshotPair.first.getLocation().toString());
+                        (customLocation, newUser) -> {
+                            if (newUser != null) {
+                                newUser.setLocation(customLocation);
+                                Log.d(TAG, "after flatMap USer = " + newUser.getLocation().toString());
                             }
-                            return usersDataSnapshotPair;
+                            return newUser;
                         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
 
-                .subscribe(usersDataSnapshotPair -> {
-                    Users userConcr = usersDataSnapshotPair.first;
-                    DataSnapshot dataSnapshot = usersDataSnapshotPair.second;
-                    Log.d(TAG, "datasnap = " + dataSnapshot.toString());
-                    Log.d(TAG, "userConcr = " + userConcr.toString());
-                    if (userConcr != null)
-                        if (userConcr.getId() != -1) {
-                            //dataSnapshot.getRef().setValue(userConcr);
-                            setNewCoordinates(userConcr, mUsersReference, userConcr.getLocation());
+                .subscribe(newUser -> {
+                    Log.d(TAG, "userConcr = " + newUser.toString());
+                    if (newUser != null)
+                        if (newUser.getId() != -1) {
+                            setNewCoordinates(newUser, mUsersReference, newUser.getLocation());
                         }
                 }, this::onError, () -> {
 
                 });
     }
 
-    private Flowable<Pair<Users, DataSnapshot>> getUser(Users oldUser, CustomLocation customLocation) {
+  /*  private Flowable<Pair<Users, DataSnapshot>> getUser(Users oldUser, CustomLocation customLocation) {
 
         return RxFirebaseDatabase.observeSingleValueEvent(mUsersReference, DataSnapshot::getChildren)
                 .toFlowable()
@@ -104,19 +101,34 @@ public class SendingChangedLocation {
                         return Flowable.just(dataSnapshotPair);
                     }
                 });
+    }*/
+
+    private Flowable<Users> getUser(Users oldUser, CustomLocation customLocation) {
+        return RxFirebaseDatabase.observeSingleValueEvent(mUsersReference, DataSnapshotMapper.listOf(Users.class))
+                .toFlowable()
+                .flatMapIterable(usersList -> usersList)
+                .filter(users -> users.getId() == (oldUser != null ? oldUser.getId() : -1))
+                //.map(dataSnapshot -> Pair.create(Utility.toUser2(dataSnapshot.getValue()), dataSnapshot))
+                //.filter(pairUserDatasnap -> pairUserDatasnap.first.getId() == (oldUser != null ? oldUser.getId() : -1))
+                .toList().toFlowable()
+                .flatMap(pairs -> {
+                    if (pairs.isEmpty()) {
+                        //TODO registerUnregister
+                        return registerUnregisterUser(customLocation);
+                    } else {
+                        return Flowable.just(pairs.get(0));
+                    }
+                });
     }
 
     private DataSnapshot mDataSnapshot;
 
-    private Flowable<Pair<Users, DataSnapshot>> registerUnregisterUser(CustomLocation customLocation) {
+    private Flowable<Users> registerUnregisterUser(CustomLocation customLocation) {
 
-        return RxFirebaseDatabase.observeSingleValueEvent(mUnregistersUsersReference, DataSnapshot::getChildren)
+        return RxFirebaseDatabase.observeSingleValueEvent(mUnregistersUsersReference, DataSnapshotMapper.listOf(Users.class))
                 .toFlowable()
                 .flatMapIterable(dataSnapshots -> dataSnapshots)
-                .map(dataSnapshot -> {
-                    mDataSnapshot = dataSnapshot;
-                    return Utility.toUser2(dataSnapshot.getValue()).getId();
-                }).toList()
+                .map(Users::getId).toList()
                 .map(Collections::max).toFlowable()
                 .map(lastId -> {
                     Users user = new Users();
@@ -149,7 +161,7 @@ public class SendingChangedLocation {
                     }
                     // Костыль
                     user.setId(-1);
-                    return Pair.create(user, mDataSnapshot);
+                    return user;
                 });
     }
 

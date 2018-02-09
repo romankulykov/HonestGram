@@ -78,27 +78,6 @@ public final class HonestApplication extends Application {
         return mMenuAdapter;
     }
 
-    public MenuAdapter getRightMenuAdapter(ItemMenu.MENU_TYPE menuType) {
-        if (mRightMenuAdapter == null)
-            initRightDrawerAdapter(menuType);
-        return mRightMenuAdapter;
-    }
-
-    private void initRightDrawerAdapter(ItemMenu.MENU_TYPE menuType) {
-        List<ItemMenu> menu = new ArrayList<>();
-        switch (menuType){
-            case PRODUCTS:
-                menu.add(new ItemMenu(R.string.add_product,android.R.color.white, ItemMenu.MENU_TYPE.ADD_PRODUCT));
-                break;
-            case MAP:
-                menu.add(new ItemMenu(R.string.tracking,android.R.color.white, ItemMenu.MENU_TYPE.ADD_PRODUCT));
-                break;
-        }
-        mRightMenuAdapter = new MenuAdapter(R.layout.list_item_menu);
-        mRightMenuAdapter.setItems(menu);
-    }
-
-
     @Override
     protected void attachBaseContext(Context context) {
         super.attachBaseContext(context);

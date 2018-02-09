@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.clustering.ClusterManager;
+import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 
 import java.util.List;
@@ -38,7 +39,7 @@ import moran_company.honestgram.utility.Utility;
  * Created by roman on 03.11.2017.
  */
 
-//@FragmentWithArgs
+@FragmentWithArgs
 public class MapFragment extends BaseMvpFragment<MapMvp.Presenter> implements MapMvp.View, OnMapReadyCallback {
 
     public static final String TAG = MapFragment.class.getName();
@@ -48,8 +49,10 @@ public class MapFragment extends BaseMvpFragment<MapMvp.Presenter> implements Ma
 
     private List<Users> usersList;
 
-
     private static final int LOCATION_PERMISSIONS_CODE = 1379;
+
+    @Arg(required = false)
+    Long statusId;
 
 
     @Override
@@ -60,7 +63,11 @@ public class MapFragment extends BaseMvpFragment<MapMvp.Presenter> implements Ma
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
 
+    public static MapFragment newInstance(long statusId) {
+        MapFragment fragment = new MapFragmentBuilder().statusId(statusId).build();
+        return fragment;
     }
 
     @Override
@@ -74,7 +81,6 @@ public class MapFragment extends BaseMvpFragment<MapMvp.Presenter> implements Ma
         setUpMap();
         mPresenter.loadUsers();
     }
-
 
     private void setUpMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()

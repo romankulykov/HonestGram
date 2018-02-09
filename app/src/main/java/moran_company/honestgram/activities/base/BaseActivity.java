@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -21,10 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -40,7 +37,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTouch;
 import butterknife.Optional;
 import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.R;
@@ -50,11 +46,13 @@ import moran_company.honestgram.activities.dialogs.DialogsActivity;
 import moran_company.honestgram.activities.map.MapActivity;
 import moran_company.honestgram.activities.profile.ProfileActivity;
 import moran_company.honestgram.base_mvp.BaseMvp;
+import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.Dialogs;
+import moran_company.honestgram.data.Goods;
 import moran_company.honestgram.data.ItemMenu;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
-import moran_company.honestgram.eventbus.UpdateNavigation;
+import moran_company.honestgram.fragments.ZoomPhotoFragment;
 import moran_company.honestgram.fragments.base.BaseFragment;
 import moran_company.honestgram.fragments.chat.ChatFragment;
 import moran_company.honestgram.fragments.chat_available.ChatAvailableFragment;
@@ -63,6 +61,7 @@ import moran_company.honestgram.fragments.main.MainFragment;
 import moran_company.honestgram.fragments.map.MapFragment;
 import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerFragment;
 import moran_company.honestgram.fragments.navigation_drawer_seller.NavigationDrawerFragmentSeller;
+import moran_company.honestgram.fragments.product_detail.ProductDetailFragment;
 import moran_company.honestgram.fragments.products.ProductsFragment;
 import moran_company.honestgram.fragments.profile.ProfileFragment;
 import moran_company.honestgram.services.MyService;
@@ -124,13 +123,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
 
     private ItemMenu.MENU_TYPE mTypeMenu;
 
-    private boolean rightSide;
-
 
     private FragmentManager mCurrentFragmentManager;
     private Dialog mDialog;
     private long mBackPressed;
     private float lastTranslate = 0.0f;
+    // private boolean rightSide = false;
 
     public static boolean newInstance(Context context, final Class<? extends AppCompatActivity> activityClass) {
         return newInstance(context, activityClass, false);
@@ -217,7 +215,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         mDialog = DialogUtility.getWaitDialog(this, this.getString(R.string.wait_loading), false);
         getCurrentFragmentManager();
         initNavigationDrawer();
-        initNavigationDrawerSeller();
+        initNavigationDrawerSecond();
         if (!Utility.checkLocationPermissions(this)) {
             ActivityCompat.requestPermissions(this,
                     new String[]{
@@ -315,9 +313,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         }
         return super.onOptionsItemSelected(item);
     }
-/*
 
-    @Optional
+  /*  @Optional
     @OnTouch(R.id.activityContainer)
     boolean touch(View view, MotionEvent motionEvent) {
         Display display = getWindowManager().getDefaultDisplay();
@@ -342,8 +339,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
                 return true;
         }
         return false;
-    }
-*/
+    }*/
 
     protected void initNavigationDrawer() {
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -354,8 +350,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
                 R.id.navigationDrawer,
                 mDrawerLayout, mToolBar);
         this.mNavigationDrawerFragment.setOnDrawerSlideListener(moveFactor -> {
-            if (!open && !rightSide)
-                lastTranslate = Utility.translateContainer(mActivityContainer, moveFactor, lastTranslate);
+            //if (!open)
+            //moveFactor = rightSide?moveFactor:-moveFactor;
+            //    lastTranslate = Utility.translateContainer(mActivityContainer, moveFactor, lastTranslate);
         });
         HonestApplication application = getHonestApplication();
         if (application.getMenuAdapter() != null)
@@ -374,27 +371,24 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
                 finish();*//*
     }*/
 
-    protected void initNavigationDrawerSeller() {
+    protected void initNavigationDrawerSecond() {
         mNavigationDrawerFragmentSeller = (NavigationDrawerFragmentSeller)
                 getSupportFragmentManager().findFragmentById(R.id.navigationDrawerSeller);
         if (mNavigationDrawerFragmentSeller == null)
             return;
-        /*mNavigationDrawerFragmentSeller.setOnDrawerSlideListener(moveFactor -> {
-            boolean open = mNavigationDrawerFragment.isDrawerOpen();
-
-        });*/
         mNavigationDrawerFragmentSeller.setUp(
                 R.id.navigationDrawerSeller,
                 mDrawerLayout, secondToolbar);
-        //setTypeMenu(getTypeMenu());
-        /*if (application.getMenuAdapter() != null)
-            mNavigationDrawerFragmentSeller.setAdapter(application.getRightMenuAdapter());*/
-    }
-
-    public void setTypeMenu(ItemMenu.MENU_TYPE menuType) {
-        HonestApplication application = getHonestApplication();
-        if (application.getMenuAdapter() != null)
-            mNavigationDrawerFragmentSeller.setAdapter(application.getRightMenuAdapter(menuType));
+        Users user = PreferencesData.INSTANCE.getUser();
+        if (user != null && user.getStatusId() != null){
+            if (user.getStatusId() != 1) {
+                mNavigationDrawerFragmentSeller.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+                hideToolbarSecond();
+            }
+        }else {
+            mNavigationDrawerFragmentSeller.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+            hideToolbarSecond();
+        }
     }
 
     public FragmentManager getCurrentFragmentManager() {
@@ -522,6 +516,18 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 
+    public void showZoomPhotoFragment(String url) {
+        String tag = ZoomPhotoFragment.class.getName();
+        ZoomPhotoFragment fragment = ZoomPhotoFragment.newInstance(url);
+        showFragment(R.id.fragmentContainer, fragment, tag, true);
+    }
+
+    public void showProductDetailFragment(Goods good) {
+        String tag = ProductDetailFragment.class.getName();
+        ProductDetailFragment fragment = ProductDetailFragment.newInstance(good);
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }
+
     public void showProductsFragment() {
         String tag = ProductsFragment.class.getName();
         ProductsFragment fragment = new ProductsFragment();
@@ -533,6 +539,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         MapFragment fragment = new MapFragment();
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
+
+    public void showMapFragment(int statusId) {
+        String tag = MapFragment.class.getName();
+        MapFragment fragment = MapFragment.newInstance(statusId);
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }
+
 
     public void showProfileFragment() {
         String tag = ProfileFragment.class.getName();
@@ -546,13 +559,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 
-    public void showChatFragment(List<Dialogs> dialogs) {
+    public void showChatFragment(Chats chat) {
         String tag = ChatFragment.class.getName();
-        ChatFragment fragment = ChatFragment.newInstance(dialogs);
+        ChatFragment fragment = ChatFragment.newInstance(chat);
         showFragment(R.id.fragmentContainer, fragment, tag, true);
     }
 
-    public void showAvailableContacts(List<List<Dialogs>> dialogs) {
+    public void showAvailableContacts(List<Chats> dialogs) {
         ChatAvailableFragment dialog = ChatAvailableFragment.newInstance(dialogs);
         dialog.show(getCurrentFragmentManager(), dialog.getTag());
     }
