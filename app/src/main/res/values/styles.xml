@@ -61,6 +61,19 @@
         <item name="android:background">@drawable/rounded_button_color_white</item>
     </style>
 
+    <style name="EditTextStyleSeveralLines" parent="EditTextStyle">
+        <item name="android:maxLines">5</item>
+        <item name="android:gravity">fill</item>
+    </style>
+
+    <style name="EditTextHint" parent="TextAppearance.AppCompat">
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:textColorHint">@color/colorTextHint</item>
+        <item name="colorControlNormal">@color/colorTextHint</item>
+        <item name="colorControlActivated">@color/colorTextHint</item>
+        <item name="colorControlHighlight">@color/colorTextHint</item>
+    </style>
+
     <!-- ToolBar -->
     <style name="ToolBarStyle" parent="Theme.AppCompat">
         <item name="android:textColorPrimary">@color/blackTextColor</item>

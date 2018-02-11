@@ -7,7 +7,7 @@ import java.io.Serializable
 /**
  * Created by roman on 26.01.2018.
  */
-class Chats constructor(var id: Long, var ownerId: Long,
+class Chats (var id: Long, var ownerId: Long,
                         var companionId: Long, var dialogs: List<Dialogs>)
     : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
@@ -25,6 +25,10 @@ class Chats constructor(var id: Long, var ownerId: Long,
     }
 
     constructor() : this(0, 0, 0, ArrayList())
+
+    constructor(id: Long):this(){
+        this.id = id
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)

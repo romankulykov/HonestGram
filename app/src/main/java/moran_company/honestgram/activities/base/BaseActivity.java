@@ -53,6 +53,7 @@ import moran_company.honestgram.data.ItemMenu;
 import moran_company.honestgram.data.PreferencesData;
 import moran_company.honestgram.data.Users;
 import moran_company.honestgram.fragments.ZoomPhotoFragment;
+import moran_company.honestgram.fragments.admin_add_product.AddProductFragment;
 import moran_company.honestgram.fragments.base.BaseFragment;
 import moran_company.honestgram.fragments.chat.ChatFragment;
 import moran_company.honestgram.fragments.chat_available.ChatAvailableFragment;
@@ -537,6 +538,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     public void showMapFragment() {
         String tag = MapFragment.class.getName();
         MapFragment fragment = new MapFragment();
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }
+
+    public void showAddProductFragment() {
+        String tag = AddProductFragment.class.getName();
+        AddProductFragment fragment = new AddProductFragment();
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 

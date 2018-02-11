@@ -3,11 +3,13 @@ package moran_company.honestgram.fragments.main
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_main.*
+import moran_company.honestgram.HonestApplication
 import moran_company.honestgram.R
 import moran_company.honestgram.activities.base.BaseActivity
 import moran_company.honestgram.adapters.MenuAdapter
 import moran_company.honestgram.data.Goods
 import moran_company.honestgram.data.ItemMenu
+import moran_company.honestgram.data.PreferencesData
 import moran_company.honestgram.fragments.base.BaseMvpFragment
 
 /**
@@ -34,6 +36,10 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
         mPresenter.loadOffers()
         mPresenter.loadCities()
         mPresenter.loadProducts()
+        var user = PreferencesData.getUser()
+
+        //HonestApplication.getDb().userDao.insertTask(user!!)
+        //var tasks = HonestApplication.getDb().userDao.getAllTasks()
         /*var user = PreferencesData.getUser()
         var sizeCart = user?.cart?.size?:0
         mBaseActivity.setBasketCounter(sizeCart)*/

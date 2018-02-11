@@ -36,27 +36,25 @@ public class ProductDetailPresenter extends BasePresenterImpl<ProductDetailMvp.V
         long ownerId = good.getOwnerId();
         Users user = PreferencesData.INSTANCE.getUser();
 
-        apiClient.getChatsByProductId(productId)
+        apiClient.getChatsByProductId(productId,user.getId())
                 .subscribe(chats -> {
-                    if (chats.isEmpty()) {
+                    if (chats.getId()==-1) {
                         Dialogs dialog = new Dialogs(lastDialogId + 1, message, 1, System.currentTimeMillis(), user.getId(),"");
                         Chats chat = new Chats(productId, lastDialogId + 1, user.getId(), ownerId, Collections.singletonList(dialog));
                         mChatsReference.push().setValue(chat);
                         mView.showChat(chat);
                     } else {
-                        Chats chat = chats.get(0);
-                        long lastMessageId = 0;
                         ArrayList<Long> ids = new ArrayList<>();
-                        for (int i = 0; i < chat.getDialogs().size(); i++) {
-                            ids.add(chat.getDialogs().get(i).getMessage_id());
+                        for (int i = 0; i < chats.getDialogs().size(); i++) {
+                            ids.add(chats.getDialogs().get(i).getMessage_id());
                         }
-                        lastMessageId = Collections.max(ids);
-                        Dialogs dialog = new Dialogs(chat.getId(), message, lastMessageId + 1, System.currentTimeMillis(), user.getId(),"");
-                        chat.getDialogs().add(dialog);
-                        apiClient.getKeyById(chat.getId(), mChatsReference)
+                        long lastMessageId = Collections.max(ids);
+                        Dialogs dialog = new Dialogs(chats.getId(), message, lastMessageId + 1, System.currentTimeMillis(), user.getId(),"");
+                        chats.getDialogs().add(dialog);
+                        apiClient.getKeyById(chats.getId(), mChatsReference)
                                 .subscribe(key -> {
-                                    mChatsReference.child(key).setValue(chat);
-                                    mView.showChat(chat);
+                                    mChatsReference.child(key).setValue(chats);
+                                    mView.showChat(chats);
                                 });
                     }
                 });

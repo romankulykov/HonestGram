@@ -10,18 +10,19 @@ import java.io.Serializable
  * Created by roman on 18.01.2018.
  */
 @IgnoreExtraProperties
-class CustomLocation constructor(var longitude: Float, var latitude: Float) : Parcelable,Serializable {
+class CustomLocation constructor(
+        var longitude: Float,
+        var latitude: Float) : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
             parcel.readFloat(),
             parcel.readFloat()) {
     }
+    var id: Long = 0
+    var time: Long = 0
 
-    var id : Long = 0
-    var time : Long = 0
-
-    constructor(id : Long,time : Long,longitude: Float,latitude: Float) : this(longitude, latitude){
-        this.id = id
-        this.time = time
+    constructor(id: Long?, time: Long?, longitude: Float?, latitude: Float?) : this(longitude!!, latitude!!) {
+        this.id = id!!
+        this.time = time!!
     }
 
 
@@ -53,7 +54,6 @@ class CustomLocation constructor(var longitude: Float, var latitude: Float) : Pa
     }
 
 
-
-
     constructor() : this(0f, 0f)
+
 }

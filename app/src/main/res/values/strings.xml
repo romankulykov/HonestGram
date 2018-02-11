@@ -81,6 +81,9 @@
     <string name="no_meetings">Диалогов пока что нет, добавьте собеседника</string>
     <string name="new_conversation">Новая беседа</string>
     <string name="ship_product">Отгрузить товар</string>
+    <string name="add_photo">Добавить фото</string>
+    <string name="input_price">Введите цену</string>
+    <string name="input_description">Введите описание товара</string>
 
 
 </resources>

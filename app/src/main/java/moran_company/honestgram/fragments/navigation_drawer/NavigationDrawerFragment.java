@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -89,6 +89,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         super.onCreate(savedInstanceState);
         mBaseActivity = (BaseActivity) getActivity();
         presenter = new NavigationDrawerPresenter(this);
+
         EventBus.getDefault().register(this);
 
     }

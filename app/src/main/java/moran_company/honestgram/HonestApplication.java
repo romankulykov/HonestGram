@@ -8,8 +8,6 @@ import android.support.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.FirebaseApp;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,6 +35,12 @@ public final class HonestApplication extends Application {
     public static HonestApplication getInstance() {
         return sInstance;
     }
+
+    //public static AppDatabase db;
+
+    //public static AppDatabase getDb() {
+    //    return db;
+    //}
 
     private MenuAdapter mMenuAdapter;
     private MenuAdapter mRightMenuAdapter;
@@ -91,7 +95,9 @@ public final class HonestApplication extends Application {
         FirebaseApp.initializeApp(this);
 
         sInstance = this;
-        FlowManager.init(new FlowConfig.Builder(this).build());
+        //FlowManager.init(new FlowConfig.Builder(this).build());
+        //db = Room.databaseBuilder(getApplicationContext(),
+        //       AppDatabase.class, "database").build();
         EventBus.getDefault().register(this);
     }
 

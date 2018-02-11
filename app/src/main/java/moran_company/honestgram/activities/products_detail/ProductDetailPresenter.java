@@ -38,15 +38,15 @@ public class ProductDetailPresenter extends BasePresenterImpl<ProductDetailMvp.V
         long ownerId = good.getOwnerId();
         Users user = PreferencesData.INSTANCE.getUser();
 
-        apiClient.getChatsByProductId(productId)
+        apiClient.getChatsByProductId(productId,user.getId())
                 .subscribe(chats -> {
-                    if (chats.isEmpty()) {
+                    if (chats==null) {
                         Dialogs dialog = new Dialogs(lastDialogId + 1, message, 1, System.currentTimeMillis(), user.getId(),"");
                         Chats chat = new Chats(productId, lastDialogId + 1, user.getId(), ownerId, Collections.singletonList(dialog));
                         mChatsReference.push().setValue(chat);
                         mView.showChat(chat);
                     } else {
-                        Chats chat = chats.get(0);
+                        Chats chat = chats;
                         long lastMessageId = 0;
                         ArrayList<Long> ids = new ArrayList<>();
                         for (int i = 0; i < chat.getDialogs().size(); i++) {

@@ -7,7 +7,6 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
-import moran_company.honestgram.GlideApp;
 import moran_company.honestgram.R;
 import moran_company.honestgram.data.Users;
 
@@ -23,10 +22,15 @@ public class AvailableContactsAdapter extends BaseAdapter<Users,AvailableContact
 
     @Override
     public void onBindViewHolder(AvailableContactsAdapter.ViewHolder holder, int position) {
-        GlideApp.with(holder.context)
+        Glide.with(holder.context)
+                .load(items.get(position).getPhotoURL())
+            //    .placeholder(R.drawable.unknown)
+                .into(holder.avatarProfile);
+        /*GlideApp.with(holder.context)
                 .load(items.get(position).getPhotoURL())
                 .placeholder(R.drawable.unknown)
                 .into(holder.avatarProfile);
+        */
         holder.nickname.setText(items.get(position).getNickname());
     }
 

@@ -1,31 +1,21 @@
 package moran_company.honestgram.fragments.navigation_drawer_seller;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,25 +23,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
-import moran_company.honestgram.GlideApp;
 import moran_company.honestgram.R;
+import moran_company.honestgram.activities.AddProductActivity;
 import moran_company.honestgram.activities.base.BaseActivity;
-import moran_company.honestgram.activities.login.LoginActivity;
 import moran_company.honestgram.adapters.MenuAdapter;
 import moran_company.honestgram.custom.DividerItemDecoration;
 import moran_company.honestgram.data.ItemMenu;
-import moran_company.honestgram.data.PreferencesData;
-import moran_company.honestgram.data.Users;
-import moran_company.honestgram.eventbus.UpdateDialogs;
-import moran_company.honestgram.eventbus.UpdateNavigation;
 import moran_company.honestgram.fragments.base.BaseFragment;
-import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerMvp;
-import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerPresenter;
 import moran_company.honestgram.utility.DebugUtility;
-import moran_company.honestgram.utility.ImageFilePath;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Kulykov Anton on 9/8/17.
@@ -256,7 +235,9 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
             switch (itemMenu.getMenuType()){
                 case CHAT_DETAIL:
                     mBaseActivity.showMapFragment();
-
+                    break;
+                case ADD_PRODUCT:
+                    BaseActivity.newInstance(getContext(), AddProductActivity.class,false);
                     break;
             }
             //BaseActivity.showActivity(baseActivity, itemMenu);

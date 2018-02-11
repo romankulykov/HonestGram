@@ -75,6 +75,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait"
             />
+        <activity android:name=".activities.AddProductActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation|layoutDirection|locale"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait"
+            />
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 

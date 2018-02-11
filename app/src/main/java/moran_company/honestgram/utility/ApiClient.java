@@ -68,11 +68,11 @@ public class ApiClient {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Flowable<List<Chats>> getChatsByProductId(long productId){
+    public Flowable<Chats> getChatsByProductId(long productId,long userId){
         return RxFirebaseDatabase.observeSingleValueEvent(mChatsReference, DataSnapshotMapper.listOf(Chats.class))
                 .toFlowable().flatMapIterable(dialogs -> dialogs)
-                .filter(dialogs -> dialogs.getProductId() == productId)
-                .toList().toFlowable();
+                .filter(dialogs -> dialogs.getProductId() == productId && (dialogs.getOwnerId() == userId || dialogs.getCompanionId() == userId))
+                .defaultIfEmpty(new Chats(-1));
     }
 
     public Flowable<String> getKeyById(long id, DatabaseReference databaseReference) {

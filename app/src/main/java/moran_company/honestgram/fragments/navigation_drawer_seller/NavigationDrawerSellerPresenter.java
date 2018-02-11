@@ -46,7 +46,6 @@ public class NavigationDrawerSellerPresenter extends BasePresenterImpl<Navigatio
         mView.setAdapter(getRightMenuAdapter(getTypeMenu()));
         getRightMenuAdapter(getTypeMenu()).
                 setOnItemClickListener((itemView, item) -> mView.onItemClicked(item, true));
-
     }
 
     public MenuAdapter getRightMenuAdapter(ItemMenu.MENU_TYPE menuType) {
@@ -105,7 +104,7 @@ public class NavigationDrawerSellerPresenter extends BasePresenterImpl<Navigatio
 
     }*/
 
-    public ItemMenu.MENU_TYPE getTypeMenu() {
+    private ItemMenu.MENU_TYPE getTypeMenu() {
         ItemMenu.MENU_TYPE menuType = ItemMenu.MENU_TYPE.NONE;
         String name = baseActivity.getClass().getName();
         if (ProductsActivity.TAG == name)
