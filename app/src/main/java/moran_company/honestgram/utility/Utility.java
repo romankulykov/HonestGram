@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -43,6 +44,7 @@ import com.google.firebase.database.DataSnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -128,11 +130,9 @@ public class Utility {
     }
 
     public static Users toUser2(Object objectMap) {
-        Log.d(TAG,objectMap.toString());
         Users words;
         Map<String, Object> stringWordsMap = new LinkedHashMap<String, Object>();
         stringWordsMap = (Map<String, Object>) objectMap;
-        Log.d(TAG,stringWordsMap.toString());
         long id = (Long.valueOf(String.valueOf(stringWordsMap.get("id"))));
         String cityId = (String.valueOf(stringWordsMap.get("city")));
         String distr = (String.valueOf(stringWordsMap.get("district")));
@@ -204,6 +204,21 @@ public class Utility {
                 return false;
         }
         return true;
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
     }
 
     public static HashSet<Long> removeListsDuplicates(List<Chats> list, long idUser) {
@@ -281,6 +296,19 @@ public class Utility {
     public static boolean checkLocationPermissions(Context context) {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean checkForCameraPermission(Context context) {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                ;
+    }
+
+    public static boolean checkWriteExternalPermissions(Context context) {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     /*public static MarkerOptions getMarkerOptions(String mapData,CustomLocation location) {

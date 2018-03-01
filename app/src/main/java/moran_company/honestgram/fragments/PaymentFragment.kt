@@ -1,5 +1,6 @@
 package moran_company.honestgram.fragments
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
@@ -8,13 +9,17 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.cloudipsp.android.*
+import moran_company.honestgram.GlideApp
 import moran_company.honestgram.R
 
 /**
  * Created by roman on 11.01.2018.
  */
 class PaymentFragment {
+
    /* private val MERCHANT_ID = 1396424
 
     private var editAmount: EditText? = null
@@ -89,8 +94,8 @@ class PaymentFragment {
 
             if (card != null) {
                 val currency = spinnerCcy!!.selectedItem as Currency
-                val order = Order(amount, currency, "vb_" + System.currentTimeMillis(), description, email)
-                order.setLang(Order.Lang.ru)
+                val order = Orders(amount, currency, "vb_" + System.currentTimeMillis(), description, email)
+                order.setLang(Orders.Lang.ru)
 
                 cloudipsp?.pay(card, order, object : Cloudipsp.PayCallback {
                     override fun onPaidProcessed(receipt: Receipt) {

@@ -2,6 +2,7 @@ package moran_company.honestgram.utility;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory;
 
 import java.util.concurrent.TimeUnit;
 

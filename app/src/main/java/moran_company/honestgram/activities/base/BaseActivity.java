@@ -28,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -40,6 +42,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.R;
+import moran_company.honestgram.activities.CartActivity;
 import moran_company.honestgram.activities.MainActivity;
 import moran_company.honestgram.activities.ProductsActivity;
 import moran_company.honestgram.activities.dialogs.DialogsActivity;
@@ -47,7 +50,6 @@ import moran_company.honestgram.activities.map.MapActivity;
 import moran_company.honestgram.activities.profile.ProfileActivity;
 import moran_company.honestgram.base_mvp.BaseMvp;
 import moran_company.honestgram.data.Chats;
-import moran_company.honestgram.data.Dialogs;
 import moran_company.honestgram.data.Goods;
 import moran_company.honestgram.data.ItemMenu;
 import moran_company.honestgram.data.PreferencesData;
@@ -55,9 +57,11 @@ import moran_company.honestgram.data.Users;
 import moran_company.honestgram.fragments.ZoomPhotoFragment;
 import moran_company.honestgram.fragments.admin_add_product.AddProductFragment;
 import moran_company.honestgram.fragments.base.BaseFragment;
+import moran_company.honestgram.fragments.cart.CartFragment;
 import moran_company.honestgram.fragments.chat.ChatFragment;
 import moran_company.honestgram.fragments.chat_available.ChatAvailableFragment;
 import moran_company.honestgram.fragments.dialogs.DialogsFragment;
+import moran_company.honestgram.fragments.goods_to_ship.GoodsToShipFragment;
 import moran_company.honestgram.fragments.main.MainFragment;
 import moran_company.honestgram.fragments.map.MapFragment;
 import moran_company.honestgram.fragments.navigation_drawer.NavigationDrawerFragment;
@@ -66,6 +70,7 @@ import moran_company.honestgram.fragments.product_detail.ProductDetailFragment;
 import moran_company.honestgram.fragments.products.ProductsFragment;
 import moran_company.honestgram.fragments.profile.ProfileFragment;
 import moran_company.honestgram.services.MyService;
+import moran_company.honestgram.ui.CustomView;
 import moran_company.honestgram.utility.DebugUtility;
 import moran_company.honestgram.utility.DialogUtility;
 import moran_company.honestgram.utility.Utility;
@@ -118,33 +123,26 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     @BindView(R.id.secondMenuBackImageView)
     ImageView mSecondMenuBackImageView;
 
+
     private Intent intent;
 
     private boolean open = false;
-
-    private ItemMenu.MENU_TYPE mTypeMenu;
 
 
     private FragmentManager mCurrentFragmentManager;
     private Dialog mDialog;
     private long mBackPressed;
-    private float lastTranslate = 0.0f;
-    // private boolean rightSide = false;
 
     public static boolean newInstance(Context context, final Class<? extends AppCompatActivity> activityClass) {
         return newInstance(context, activityClass, false);
     }
 
     public static boolean newInstance(Context context, final Class<? extends AppCompatActivity> activityClass, boolean clearBackStack) {
-       /* if (activityClass == context.getClass()) {
-            return false;
-        }*/
 
         Intent intent = new Intent(context, activityClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         if (clearBackStack)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ActivityCompat.startActivity(context, intent, null);
         return true;
     }
@@ -179,11 +177,18 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
                 break;
             case BUSINESS_MEETINGS:
                 BaseActivity.newInstance(context, BusinessMeetingsActivity.class, false);
-                break;
+                break;*/
             case ABOUT:
-                BaseActivity.newInstance(context, AboutActivity.class, false);
+
+                /*HonestApplication.getDb().getUserDao()
+                        .getAllTasks()
+                        .subscribe(users -> {
+                            Log.d(TAG, "users size = " + users.size());
+                            Log.d(TAG, "users = " + users.toString());
+
+                        });*/
                 break;
-            case FRIENDS:
+           /* case FRIENDS:
                 BaseActivity.newInstance(context, FriendsActivity.class, false);
                 break;*/
             case CHATS:
@@ -195,6 +200,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     }
 
     public abstract int getLayoutResId();
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -284,7 +291,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     @Optional
     @OnClick(R.id.cart)
     public void clickCart() {
-
+        BaseActivity.newInstance(this, CartActivity.class);
     }
 
     @Optional
@@ -362,16 +369,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
     }
 
 
-   /* @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateNavigation(UpdateNavigation updateNavigation) {
-        DebugUtility.logTest(TAG, "onUpdateProfile");
-        if (updateNavigation != null) {
-            //this.open = updateNavigation.isFoo();
-        }
-          *//*  if ((updateProfileEvent.checkLogin() == null && !(this instanceof MainActivity)))
-                finish();*//*
-    }*/
-
     protected void initNavigationDrawerSecond() {
         mNavigationDrawerFragmentSeller = (NavigationDrawerFragmentSeller)
                 getSupportFragmentManager().findFragmentById(R.id.navigationDrawerSeller);
@@ -381,12 +378,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
                 R.id.navigationDrawerSeller,
                 mDrawerLayout, secondToolbar);
         Users user = PreferencesData.INSTANCE.getUser();
-        if (user != null && user.getStatusId() != null){
+        if (user != null && user.getStatusId() != null) {
             if (user.getStatusId() != 1) {
                 mNavigationDrawerFragmentSeller.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
                 hideToolbarSecond();
             }
-        }else {
+        } else {
             mNavigationDrawerFragmentSeller.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
             hideToolbarSecond();
         }
@@ -547,9 +544,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 
-    public void showMapFragment(int statusId) {
+    /*public void showMapFragment(int statusId) {
         String tag = MapFragment.class.getName();
-        MapFragment fragment = MapFragment.newInstance(statusId);
+        MapFragment fragment = new MapFragment();
+        showFragment(R.id.fragmentContainer, fragment, tag, false);
+    }*/
+
+    public void showCartFragment() {
+        String tag = CartFragment.class.getName();
+        CartFragment fragment = new CartFragment();
         showFragment(R.id.fragmentContainer, fragment, tag, false);
     }
 
@@ -574,6 +577,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
 
     public void showAvailableContacts(List<Chats> dialogs) {
         ChatAvailableFragment dialog = ChatAvailableFragment.newInstance(dialogs);
+        dialog.show(getCurrentFragmentManager(), dialog.getTag());
+    }
+
+    public void showGoodsToShipFragment(LatLng latLng) {
+        GoodsToShipFragment dialog = GoodsToShipFragment.newInstance(latLng);
         dialog.show(getCurrentFragmentManager(), dialog.getTag());
     }
 
@@ -627,6 +635,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         if (mToolBarTitle != null) mToolBarTitle.setText(titleId);*/
     }
 
+    public void setSecondBarTitle(String title) {
+        secondBarTitle.setText(title);
+    }
+
     public void showToolbar() {
         if (mToolBar != null) mToolBar.setVisibility(View.VISIBLE);
     }
@@ -659,7 +671,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
 
     public void setBasketCounter(Users user) {
         if (user != null) {
-            int count = user.getCart() == null ? 0 : user.getCart().size();
+            int count = user.getCart() == null ? 0 : user.getCartList() == null ? 0 : user.getCartList().size();
             if (mBasketCounter != null)
                 if (count > 0) {
                     mBasketCounter.setVisibility(View.VISIBLE);
@@ -689,13 +701,4 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvp.
         this.open = open;
     }
 
-    public ItemMenu.MENU_TYPE getTypeMenu() {
-        ItemMenu.MENU_TYPE menuType = ItemMenu.MENU_TYPE.NONE;
-        String name = this.getClass().getName();
-        if (ProductsActivity.TAG == name)
-            menuType = ItemMenu.MENU_TYPE.PRODUCTS;
-        if (MapActivity.TAG == name)
-            menuType = ItemMenu.MENU_TYPE.MAP;
-        return menuType;
-    }
 }

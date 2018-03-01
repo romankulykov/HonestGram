@@ -18,7 +18,7 @@ class ProfileFragment : BaseMvpFragment<ProfileMvp.Presenter>(), ProfileMvp.View
 
     override fun getLayoutResId(): Int = R.layout.fragment_profile
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.loadCities()
 

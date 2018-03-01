@@ -46,12 +46,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/registration"
+        app:layout_constraintBottom_toTopOf="@+id/enter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/registration"
+        android:id="@+id/enter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="22dp"
@@ -62,7 +62,14 @@
         android:text="@string/enter"
         android:textColor="@android:color/white"
         android:textSize="@dimen/x_big_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/loginButton" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/registrationTextView" />
+
 
     <TextView
         android:id="@+id/registrationTextView"

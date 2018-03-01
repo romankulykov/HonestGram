@@ -15,6 +15,7 @@ import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Flowable;
 import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.data.Users;
+import moran_company.honestgram.db_utility.AppDatabase;
 import moran_company.honestgram.utility.ApiClient;
 import moran_company.honestgram.utility.DebugUtility;
 import moran_company.honestgram.utility.Utility;
@@ -38,11 +39,15 @@ public abstract class BasePresenterImpl<V extends BaseMvp.View> implements BaseM
             .getReference()
             .child("database");
 
+    protected DatabaseReference mOrdersReference = mReference.child("orders");
     protected DatabaseReference mUsersReference = mReference.child("users");
     protected DatabaseReference mDialogsReference = mReference.child("dialogs");
     protected DatabaseReference mChatsReference = mReference.child("chats");
     protected DatabaseReference mGoodsReference = mReference.child("Goods");
     protected DatabaseReference mCitiesReference = mReference.child("cities");
+
+    protected AppDatabase dbInstance = HonestApplication.getDb();
+
 
     protected StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
 

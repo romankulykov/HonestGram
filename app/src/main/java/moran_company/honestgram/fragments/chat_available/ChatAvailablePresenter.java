@@ -106,7 +106,7 @@ public class ChatAvailablePresenter extends BasePresenterImpl<ChatAvailableMvp.V
                 .toList()
                 .subscribe(users -> {
                     if (isExistsView()) {
-                        mView.showUsers(users);
+                        mView.showOrders(users);
                     }
                 });
 */
@@ -120,7 +120,7 @@ public class ChatAvailablePresenter extends BasePresenterImpl<ChatAvailableMvp.V
         Dialogs dialogsSelected = new Dialogs(lastDialogId + 1, "", 0, 0, selectedUser.getId());
         mDialogsReference.push().setValue(dialogs);
         mDialogsReference.push().setValue(dialogsSelected);
-        mView.successCreate();*/
+        mView.successShipped();*/
         Dialogs dialogsSelected = new Dialogs(lastDialogId + 1, "", 0, 0, selectedUser.getId(),"");
         Chats chat = new Chats(lastDialogId+1,user.getId(),selectedUser.getId(),new ArrayList<>());
         mChatsReference.push().setValue(chat);

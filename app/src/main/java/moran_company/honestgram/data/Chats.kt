@@ -1,14 +1,27 @@
 package moran_company.honestgram.data
 
+import android.arch.persistence.room.*
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.reactivex.Flowable
 import java.io.Serializable
 
 /**
  * Created by roman on 26.01.2018.
  */
-class Chats (var id: Long, var ownerId: Long,
-                        var companionId: Long, var dialogs: List<Dialogs>)
+const val CHATS_TABLE = "chats"
+
+
+@Entity(tableName = CHATS_TABLE)
+class Chats(
+        @PrimaryKey(autoGenerate = true)
+        var id: Long,
+        var ownerId: Long,
+        var companionId: Long,
+        @TypeConverters(DialogsConverter::class)
+        var dialogs: List<Dialogs>)
     : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -26,7 +39,7 @@ class Chats (var id: Long, var ownerId: Long,
 
     constructor() : this(0, 0, 0, ArrayList())
 
-    constructor(id: Long):this(){
+    constructor(id: Long) : this() {
         this.id = id
     }
 
@@ -50,4 +63,40 @@ class Chats (var id: Long, var ownerId: Long,
             return arrayOfNulls(size)
         }
     }
+
+}
+
+class DialogsConverter {
+    @TypeConverter
+    fun fromDialogsConverter(value: String?): List<Dialogs>? {
+        val gson = Gson()
+        val type = object : TypeToken<List<Dialogs>>() {}.getType()
+        return gson.fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun dialogsConverterToGson(dialogs: List<Dialogs>?): String? {
+        return Gson().toJson(dialogs)
+    }
+}
+
+@Dao
+interface ChatsDao{
+    @Query("select * from $CHATS_TABLE")
+    fun getAllTasks(): Flowable<List<Chats>>
+
+    @Query("SELECT COUNT(*) FROM $CHATS_TABLE")
+    fun hasData(): Flowable<Int>
+
+    @Query("select * from $CHATS_TABLE where id = :arg0")
+    fun findUserById(id: Long): Chats
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertTask(user: Chats)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateTask(user: Chats)
+
+    @Delete
+    fun deleteTask(user: Chats)
 }

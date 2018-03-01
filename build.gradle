@@ -1,17 +1,27 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 //apply plugin: 'kotlin-kapt'
+//apply plugin: 'kotlin-android' // if using Kotlin
+apply plugin: 'kotlin-kapt' // if using Kotlin
+
 
 buildscript {
     ext.kotlin_version = '1.1.51'
+    //ext.objectboxVersion = '1.4.1'
     repositories {
         google()
         jcenter()
+        mavenCentral()
+        //maven { url "http://objectbox.net/beta-repo/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+
         classpath 'com.google.gms:google-services:3.1.1'
+
+        //classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -23,7 +33,8 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url "https://maven.google.com"}
+        maven { url "https://maven.google.com" }
+        //maven { url "http://objectbox.net/beta-repo/" }
     }
 }
 
@@ -36,25 +47,31 @@ ext {
     minSdkVersion = 19
     targetSdkVersion = 27
     compileSdkVersion = 27
-    buildToolsVersion = '27.0.1'
+    buildToolsVersion = '27.0.0'
 
     // App versions
     appVersionCode = 1
     appVersionName = "1.0.0"
     // Library versions
-    supportLibraryVersion = '26.1.0'
+    supportLibraryVersion = '27.0.2'
     playServicesVersion = '11.8.0'
-    glideVersion = '4.2.0'
+    glideVersion = '4.6.1'
+
+    roomVersion = '1.0.0'
 
     butterknifeVersion = '8.7.0'
     retrofit2Version = '2.3.0'
 
-    fragmentargs = '3.0.2'
+    fragmentargs = '3.0.0'
     parcelerVersion = '1.1.6'
 
     dbflow_version = "4.1.1"
 
     icepickVersion = '3.2.0'
+
+    anko_version='0.10.4'
+
+    //objectboxVersion = '1.4.1'
 
     //dbflow_version = "4.0.5"
 

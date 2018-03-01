@@ -2,6 +2,7 @@ package moran_company.honestgram.data
 
 import android.content.Context
 import android.preference.PreferenceManager
+import android.util.Log
 import com.google.gson.Gson
 import moran_company.honestgram.HonestApplication
 import moran_company.honestgram.utility.ObjectSerializer
@@ -18,7 +19,6 @@ object PreferencesData {
     private val KEY_PRODUCTS = "products"
 
 
-
     private val applicationContext: Context
         get() = HonestApplication.getInstance()
 
@@ -30,6 +30,7 @@ object PreferencesData {
     fun getUnregisterKey(): String? = getString(KEY_UNREGISTER, "")
 
     fun saveUser(user: Users) {
+        //HonestApplication.getDb().userDao.insertTask(user)
         var json = Gson().toJson(user)
         save(KEY_PROFILE, json)
     }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choice_product_to_ship"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_view_height"
+        android:background="@color/lightGrayTextColor"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:closeIcon="@android:drawable/ic_menu_close_clear_cancel"
+        app:defaultQueryHint="@string/search_hint"
+        app:iconifiedByDefault="false"
+        app:layout_constraintBaseline_toBaselineOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView1"
+        app:queryBackground="@android:color/transparent"
+        app:searchHintIcon="@null"
+        app:searchIcon="@null" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/orders"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        />
+
+</android.support.constraint.ConstraintLayout>

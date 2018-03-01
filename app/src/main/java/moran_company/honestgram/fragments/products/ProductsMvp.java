@@ -4,6 +4,7 @@ import java.util.List;
 
 import moran_company.honestgram.base_mvp.BaseMvp;
 import moran_company.honestgram.data.Goods;
+import moran_company.honestgram.data.enums.FILTER;
 
 /**
  * Created by roman on 24.01.2018.
@@ -20,5 +21,7 @@ public interface ProductsMvp {
         void loadProducts();
 
         void addToCart(Goods goods);
+
+        void filterBy(FILTER filterByPrice);
     }
 }

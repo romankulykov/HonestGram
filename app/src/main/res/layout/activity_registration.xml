@@ -63,12 +63,12 @@
         android:layout_marginBottom="12dp"
         android:hint="@string/input_password_again"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/registration"
+        app:layout_constraintBottom_toTopOf="@+id/enter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/registration"
+        android:id="@+id/enter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="22dp"

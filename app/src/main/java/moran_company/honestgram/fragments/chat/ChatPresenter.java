@@ -13,6 +13,7 @@ import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import durdinapps.rxfirebase2.RxFirebaseStorage;
 import io.reactivex.Flowable;
+import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.base_mvp.BasePresenterImpl;
 import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.Dialogs;
@@ -65,7 +66,7 @@ public class ChatPresenter extends BasePresenterImpl<ChatMvp.View> implements Ch
     }
 
     @Override
-    public void sendMessage(String s, long dialogId, long messageId,String url) {
+    public void sendMessage(String s, long dialogId, long messageId, String url) {
         RxFirebaseDatabase.observeSingleValueEvent(mChatsReference, DataSnapshotMapper.listOf(Chats.class))
                 .toFlowable().flatMapIterable(dialogs -> dialogs)
                 .filter(dialogs -> dialogs.getId() == dialogId)
@@ -77,7 +78,7 @@ public class ChatPresenter extends BasePresenterImpl<ChatMvp.View> implements Ch
                     List<Chats> list = pair.first;
                     String key = pair.second;
                     if (!list.isEmpty() && isExistsView()) {
-                        Dialogs dialogs = new Dialogs(dialogId, s, messageId + 1, System.currentTimeMillis(), PreferencesData.INSTANCE.getUser().getId(),url);
+                        Dialogs dialogs = new Dialogs(dialogId, s, messageId + 1, System.currentTimeMillis(), PreferencesData.INSTANCE.getUser().getId(), url);
                         Chats chat = list.get(0);
                         List<Dialogs> dialogsArrayList = chat.getDialogs() == null ? new ArrayList<>() : chat.getDialogs();
                         dialogsArrayList.add(dialogs);
@@ -88,31 +89,33 @@ public class ChatPresenter extends BasePresenterImpl<ChatMvp.View> implements Ch
                         if (myUser.getId() != chat.getCompanionId())
                             idAnotherUser = chat.getCompanionId();
                         try {
-                            PushNotifictionHelper.sendPushNotification(Utility.getUserById(idAnotherUser, PreferencesData.INSTANCE.getUsers()).getToken(), s);
+                            PushNotifictionHelper.sendPushNotification(/*Utility.getUserById(idAnotherUser, PreferencesData.INSTANCE.getUsers()*/
+                                    HonestApplication.getDb().getUserDao().findUserById(idAnotherUser).getToken(), s);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         if (isExistsView()) {
                             mView.successSend();
                             loadMessages(dialogId);
-                        };
+                        }
+                        ;
                     }
                 });
     }
 
     @Override
-    public void attachImage(String path,long chatId) {
+    public void attachImage(String path, long chatId) {
         Uri filePathUri = Uri.fromFile(new File(path));
         Users oldUser = PreferencesData.INSTANCE.getUser();
         // Необходимо : Прокинуть в storage новую картинку, затем сохранить ее урл иназвание,
         // получить нашего юзера и в него пропихнуть новые данные урла картинки и название и отправить в бд
         // и затем удалить старую фотографию
         String oldPhotoName = oldUser.getPhotoName();
-        String nameFile = oldUser.getNickname() + "_chatId_"+chatId +"_time_"+ System.currentTimeMillis();
+        String nameFile = oldUser.getNickname() + "_chatId_" + chatId + "_time_" + System.currentTimeMillis();
         RxFirebaseStorage.putFile(mStorageReference.child(nameFile), filePathUri)
                 .subscribe(taskSnapshot -> {
                     mView.showUrlPhoto(taskSnapshot.getDownloadUrl().toString());
-                },this::onError,this::onComplete);
+                }, this::onError, this::onComplete);
     }
 
 

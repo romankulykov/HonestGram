@@ -8,6 +8,9 @@
     <string name="lbl_description">Описание</string>
     <string name="btn_pay">Оплатить</string>
 
+    <string name="facebook_app_id">200908440656852</string>
+    <string name="fb_login_protocol_scheme">fb200908440656852</string>
+
     <string name="btn_simple_example">Simple Example</string>
     <string name="btn_flexible_example">Flexible Example</string>
 
@@ -84,6 +87,17 @@
     <string name="add_photo">Добавить фото</string>
     <string name="input_price">Введите цену</string>
     <string name="input_description">Введите описание товара</string>
+    <string name="empty_photo">Необходимо добавить фото</string>
+    <string name="input_title">Введите название товара</string>
+    <string name="success_add_product">Товар успешно добавлен</string>
+    <string name="filter_by_city">Сортировать по городам</string>
+    <string name="filter_by_price">Сортировать по цене</string>
+    <string name="choice_product_to_ship">Выберите товар для отгрузки</string>
+    <string name="search_hint">Введите для быстрого поиска</string>
+    <string name="shipped_orders">Отгруженные товары</string>
+    <string name="before_dispatch_take_photo">Перед отправкой сделайте фото</string>
+    <string name="add_comment">Добавить комментарий</string>
+    <string name="order_there">Отгрузка произведена здесь</string>
 
 
 </resources>

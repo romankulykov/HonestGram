@@ -25,7 +25,7 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
 
     override fun getLayoutResId(): Int = R.layout.fragment_main
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.init()
         initMenuAdapter()
@@ -33,12 +33,9 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
 
     override fun onResume() {
         super.onResume()
-        mPresenter.loadOffers()
-        mPresenter.loadCities()
-        mPresenter.loadProducts()
-        var user = PreferencesData.getUser()
+        mPresenter.loadNecessaryData()
 
-        //HonestApplication.getDb().userDao.insertTask(user!!)
+
         //var tasks = HonestApplication.getDb().userDao.getAllTasks()
         /*var user = PreferencesData.getUser()
         var sizeCart = user?.cart?.size?:0
@@ -97,7 +94,7 @@ class MainFragment : BaseMvpFragment<MainMvp.Presenter>(),MainMvp.View{
         indicator.setViewPager(pager)
         adapter.registerDataSetObserver(indicator.dataSetObserver)*/
 
-        specialOffer.setListGoods(goods as java.util.ArrayList<Goods>,true)
+        specialOffer.setListGoods(goods as ArrayList<Goods>,true)
 
 
         //specialOffer.setGoods(goods as ArrayList<Goods>)

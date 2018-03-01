@@ -1,6 +1,7 @@
 package moran_company.honestgram;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,7 +21,9 @@ import io.fabric.sdk.android.Fabric;
 import moran_company.honestgram.adapters.MenuAdapter;
 import moran_company.honestgram.data.ItemMenu;
 import moran_company.honestgram.data.PreferencesData;
+import moran_company.honestgram.db_utility.AppDatabase;
 import moran_company.honestgram.utility.DebugUtility;
+
 
 /**
  * Created by roman on 11.01.2018.
@@ -36,11 +39,11 @@ public final class HonestApplication extends Application {
         return sInstance;
     }
 
-    //public static AppDatabase db;
+    public static AppDatabase db;
 
-    //public static AppDatabase getDb() {
-    //    return db;
-    //}
+    public static AppDatabase getDb() {
+        return db;
+    }
 
     private MenuAdapter mMenuAdapter;
     private MenuAdapter mRightMenuAdapter;
@@ -96,8 +99,11 @@ public final class HonestApplication extends Application {
 
         sInstance = this;
         //FlowManager.init(new FlowConfig.Builder(this).build());
-        //db = Room.databaseBuilder(getApplicationContext(),
-        //       AppDatabase.class, "database").build();
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "database")
+                //.fallbackToDestructiveMigration()
+                .addMigrations(AppDatabase.Companion.getMIGRATION_2_3())
+                .allowMainThreadQueries().build();
         EventBus.getDefault().register(this);
     }
 

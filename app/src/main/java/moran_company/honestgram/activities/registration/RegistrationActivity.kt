@@ -44,7 +44,7 @@ class RegistrationActivity : BaseMvpActivity<RegistrationMvp.Presenter>(), Regis
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        registration.setOnClickListener({ view ->
+        enter.setOnClickListener({ view ->
             if (!Utility.checkLocationPermissions(this)) {
                 if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     statusCheck()

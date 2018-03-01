@@ -142,8 +142,8 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
                 R.drawable.menu_list_divider,
                 0,
                 0);
-
-        mNavigationDrawerList.addItemDecoration(dividerItemDecoration);
+        if (mNavigationDrawerList != null)
+            mNavigationDrawerList.addItemDecoration(dividerItemDecoration);
 
 
         //updateView();
@@ -181,6 +181,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void setUp(int fragmentId, DrawerLayout drawerLayout, Toolbar toolBar) {
         this.fragmentContainerView = getActivity().findViewById(fragmentId);
         this.drawerLayout = drawerLayout;
+        if (this.drawerLayout != null)
         this.drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
 
         //this.drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);

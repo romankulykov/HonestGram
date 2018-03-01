@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,6 +28,8 @@ import moran_company.honestgram.activities.base.BaseActivity;
 import moran_company.honestgram.adapters.MenuAdapter;
 import moran_company.honestgram.custom.DividerItemDecoration;
 import moran_company.honestgram.data.ItemMenu;
+import moran_company.honestgram.data.eventbus.UpdateRightMenu;
+import moran_company.honestgram.eventbus.UpdateMap;
 import moran_company.honestgram.fragments.base.BaseFragment;
 import moran_company.honestgram.utility.DebugUtility;
 
@@ -110,7 +111,7 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateProfile(Object updateProfileEvent) {
+    public void onUpdateProfile(UpdateRightMenu updateProfileEvent) {
         DebugUtility.logTest(TAG, "onUpdateProfile");
 
     }
@@ -124,8 +125,8 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
                 R.drawable.menu_list_divider,
                 0,
                 0);
-
-        mNavigationDrawerRightList.addItemDecoration(dividerItemDecoration);
+        if (mNavigationDrawerRightList != null)
+            mNavigationDrawerRightList.addItemDecoration(dividerItemDecoration);
 
 
         //updateView();
@@ -140,40 +141,42 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
     public void setUp(int fragmentId, DrawerLayout drawerLayout, Toolbar toolBar) {
         this.fragmentContainerView = getActivity().findViewById(fragmentId);
         this.drawerLayout = drawerLayout;
-        actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolBar,
-                0, 0) {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                //super.onDrawerSlide(drawerView, slideOffset);
-                float moveFactor = (mNavigationDrawerView.getWidth() * slideOffset);
-                if (onDrawerSlideListener != null)
-                    onDrawerSlideListener.onTranslateContainer(moveFactor);
-                //EventBus.getDefault().post(new UpdateNavigation(true));
+        if (actionBarDrawerToggle != null)
+            actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolBar,
+                    0, 0) {
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    //super.onDrawerSlide(drawerView, slideOffset);
+                    float moveFactor = (mNavigationDrawerView.getWidth() * slideOffset);
+                    if (onDrawerSlideListener != null)
+                        onDrawerSlideListener.onTranslateContainer(moveFactor);
+                    //EventBus.getDefault().post(new UpdateNavigation(true));
 
-                mBaseActivity.setOpen(true);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                //super.onDrawerClosed(drawerView);
-                if (!isAdded()) {
-                    return;
+                    mBaseActivity.setOpen(true);
                 }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    //super.onDrawerClosed(drawerView);
+                    if (!isAdded()) {
+                        return;
+                    }
 //                        mViewFlipper.setDisplayedChild(VIEW_FLIPPER_MAIN_MENU);
-                mBaseActivity.setOpen(false);
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-//                        super.onDrawerOpened(drawerView);
-                if (!isAdded()) {
-                    return;
+                    mBaseActivity.setOpen(false);
+                    getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
                 }
-                // getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-            }
-        };
-        this.drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
+                @Override
+                public void onDrawerOpened(View drawerView) {
+//                        super.onDrawerOpened(drawerView);
+                    if (!isAdded()) {
+                        return;
+                    }
+                    // getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                }
+            };
+        if (this.drawerLayout != null)
+            this.drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
     }
 
@@ -218,13 +221,6 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (actionBarDrawerToggle.onOptionsItemSelected(item))
-            return true;
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onItemClicked(ItemMenu itemMenu, boolean fromMenu) {
         closeDrawer();
         if (itemMenu == null)
@@ -232,12 +228,24 @@ public class NavigationDrawerFragmentSeller extends BaseFragment implements Navi
         DebugUtility.logTest(TAG, itemMenu.getMenuType() + "");
         Handler h = new Handler();
         h.postDelayed(() -> {
-            switch (itemMenu.getMenuType()){
+            switch (itemMenu.getMenuType()) {
                 case CHAT_DETAIL:
                     mBaseActivity.showMapFragment();
                     break;
                 case ADD_PRODUCT:
-                    BaseActivity.newInstance(getContext(), AddProductActivity.class,false);
+                    BaseActivity.newInstance(getContext(), AddProductActivity.class, false);
+                    break;
+                case FILTER_BY_CITY:
+                    EventBus.getDefault().post(itemMenu);
+                    break;
+                case FILTER_BY_PRICE:
+                    EventBus.getDefault().post(itemMenu);
+                    break;
+                case LIST_OF_GOODS:
+                    EventBus.getDefault().post(itemMenu);
+                    break;
+                case SHIPPED_ORDERS:
+                    EventBus.getDefault().post(new UpdateMap(UpdateMap.TYPE_ACTION.PEOPLE_ORDERS));
                     break;
             }
             //BaseActivity.showActivity(baseActivity, itemMenu);

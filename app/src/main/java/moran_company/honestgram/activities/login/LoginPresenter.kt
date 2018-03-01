@@ -1,6 +1,7 @@
 package moran_company.honestgram.activities.login
 
 import android.text.TextUtils
+import android.util.Log
 import com.google.firebase.iid.FirebaseInstanceId
 import moran_company.honestgram.base_mvp.BasePresenterImpl
 import moran_company.honestgram.data.Users

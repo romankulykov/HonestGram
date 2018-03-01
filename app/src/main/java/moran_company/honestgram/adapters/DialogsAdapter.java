@@ -12,6 +12,7 @@ import java.util.List;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import moran_company.honestgram.GlideApp;
+import moran_company.honestgram.HonestApplication;
 import moran_company.honestgram.R;
 import moran_company.honestgram.data.Chats;
 import moran_company.honestgram.data.Dialogs;
@@ -104,14 +105,18 @@ public class DialogsAdapter extends BaseAdapter<Chats, DialogsAdapter.ViewHolder
         else
             companionId = chat.getOwnerId();
 
-        Users otherUser = Utility.getUserById(companionId, PreferencesData.INSTANCE.getUsers());
+        //Users otherUser = Utility.getUserById(companionId, PreferencesData.INSTANCE.getUsers());
+
+        Users otherUser = HonestApplication.getDb().getUserDao()
+                .findUserById(companionId);
 
 
         int lastMsgIndex = chat.getDialogs().size() - 1;
-        GlideApp.with(holder.context)
-                .load(otherUser.getPhotoURL())
-                .placeholder(R.drawable.unknown)
-                .into(holder.avatarProfile);
+        if (otherUser != null)
+            GlideApp.with(holder.context)
+                    .load(otherUser.getPhotoURL())
+                    .placeholder(R.drawable.unknown)
+                    .into(holder.avatarProfile);
 
         if (lastMsgIndex != -1) {
             Dialogs lastMessage = chat.getDialogs().get(lastMsgIndex);
@@ -119,13 +124,15 @@ public class DialogsAdapter extends BaseAdapter<Chats, DialogsAdapter.ViewHolder
             holder.whoWrite.setText(lastMessage.getUser_id() == myUser.getId() ? holder.context.getString(R.string.you_write) :
                     otherUser != null ? otherUser.getNickname() + " : " : holder.context.getString(R.string.companion_write));
             holder.timestamp.setText(Utility.getFormattedDate(chat.getDialogs().get(lastMsgIndex).getTimestamp()));
-            if (chat.getProductId()==0) {
-                 holder.name.setText(otherUser.getNickname());
-                GlideApp.with(holder.context)
-                        .load(otherUser.getPhotoURL())
-                        .placeholder(R.drawable.unknown)
-                        .into(holder.avatarProfile);
-            }else {
+            if (chat.getProductId() == 0) {
+                if (otherUser != null) {
+                    holder.name.setText(otherUser.getNickname());
+                    GlideApp.with(holder.context)
+                            .load(otherUser.getPhotoURL())
+                            .placeholder(R.drawable.unknown)
+                            .into(holder.avatarProfile);
+                }
+            } else {
                 Goods good = Utility.getProductById(chat.getProductId());
                 holder.name.setText(good.getTitle());
                 GlideApp.with(holder.context)
@@ -133,7 +140,7 @@ public class DialogsAdapter extends BaseAdapter<Chats, DialogsAdapter.ViewHolder
                         .placeholder(R.drawable.unknown)
                         .into(holder.avatarProfile);
             }
-        }else {
+        } else {
             holder.whoWrite.setText(R.string.new_conversation);
         }
 

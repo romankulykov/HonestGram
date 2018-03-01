@@ -73,9 +73,11 @@ public class MenuAdapter extends BaseAdapter<ItemMenu, MenuAdapter.ViewHolder> {
                 if (currentItem != ItemMenu.MENU_TYPE.NONE)
                     mTitleView.setTextColor(ContextCompat.getColor(mTitleView.getContext(),
                             !isSelected ? R.color.blackTextColor : R.color.saffron));
-                mTitleView.setText(itemMenu.getIdTitleString());
-                mMenuImageView.setVisibility(itemMenu.getIdImageDrawable()==0?View.GONE:View.VISIBLE);
-                mMenuImageView.setImageResource(itemMenu.getIdImageDrawable()==0?android.R.color.white:itemMenu.getIdImageDrawable());
+                if (itemMenu.getIdTitleString() != 0)
+                    mTitleView.setText(itemMenu.getIdTitleString());
+                else mTitleView.setText(itemMenu.getTitle());
+                mMenuImageView.setVisibility(itemMenu.getIdImageDrawable() == 0 ? View.GONE : View.VISIBLE);
+                mMenuImageView.setImageResource(itemMenu.getIdImageDrawable() == 0 ? android.R.color.white : itemMenu.getIdImageDrawable());
                 //mTitleView.setCompoundDrawablesWithIntrinsicBounds(itemMenu.getIdImageDrawable(), 0, 0, 0);
             }
         }

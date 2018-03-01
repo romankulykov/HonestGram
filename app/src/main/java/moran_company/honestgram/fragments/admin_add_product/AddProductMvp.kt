@@ -7,10 +7,12 @@ import moran_company.honestgram.base_mvp.BaseMvp
  */
 interface AddProductMvp {
     interface View : BaseMvp.View{
-
+        fun showPhotoNameAndUrl(photoName : String,photoUrl : String)
+        fun successAddedProduct()
     }
 
     interface Presenter : BaseMvp.Presenter{
-
+        fun loadPhoto(path : String)
+        fun pushProduct(title : String,photoName: String, photoUrl: String, price: Long, description: String)
     }
 }
